@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function ProductClient({ product }) {
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!product) {
     return <h1 className="text-center text-2xl py-20">Product not found</h1>;
