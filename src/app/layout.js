@@ -1,6 +1,8 @@
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { CartProvider } from "@/context/CardContext";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata = {
   title: "Tanzo",
@@ -9,14 +11,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="bg-[#fafafa] text-black">
-        <Navbar />
-        <main className="pt-20">
-          {children}
-        </main>
-        <Footer/>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className="bg-[#fafafa] text-black">
+          <Navbar />
+          <main>
+            <CartProvider>{children}</CartProvider>
+          </main>
+          <Footer />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

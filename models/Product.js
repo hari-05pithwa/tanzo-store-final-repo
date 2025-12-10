@@ -1,0 +1,25 @@
+import mongoose from "mongoose";
+
+const ProductSchema = new mongoose.Schema(
+  {
+    slug: { type: String, unique: true, required: true },
+    imageSrc: { type: String, required: true }, // Cloudinary URL
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    material: { type: String, required: true },
+    color: { type: String, required: true },
+    price: { type: Number, required: true },
+    sizes: [{ type: String }], // ["S","M","L","XL"]
+
+    // ⭐ Added gender field
+    gender: { 
+      type: String, 
+      enum: ["male", "female", "unisex"], 
+      required: true 
+    }
+  },
+  { timestamps: true }
+);
+
+export default mongoose.models.Product ||
+  mongoose.model("Product", ProductSchema);

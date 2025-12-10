@@ -18,7 +18,7 @@ export default function Home() {
       <CtaSection/>
       <WomenSection/>
       <CtaSection2/>
-
+      {/* <Footer/> */}
     </main>
   );
 }

@@ -4,7 +4,7 @@ import React from "react";
 
 export default function CtaSection2() {
   return (
-    <section className="bg-[#ffffff] py-24 border-t border-b border-[#e7e7e7] mb-12">
+    <section className="bg-[#ffffff] py-24 border-t border-b border-[#e7e7e7]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-[#444444] mb-4">
           Made for Every Moment.

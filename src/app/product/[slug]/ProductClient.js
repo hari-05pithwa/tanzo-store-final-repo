@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 export default function ProductClient({ product }) {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   if (!product) {
     return <h1 className="text-center text-2xl py-20">Product not found</h1>;
@@ -73,14 +74,14 @@ export default function ProductClient({ product }) {
             </div>
 
             <div>
-            <p className="font-[600] mt-8 mb-2 text-xl">Quantity:</p>
+              <p className="font-[600] mt-8 mb-2 text-xl">Quantity:</p>
 
-            {/* 🛑 Start of Custom Dropdown Wrapper */}
-            <div className="relative w-24">
-              <select
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                className={`
+              {/* 🛑 Start of Custom Dropdown Wrapper */}
+              <div className="relative w-24">
+                <select
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className={`
                   appearance-none 
                   w-full h-12
                   border border-gray-300 
@@ -90,31 +91,44 @@ export default function ProductClient({ product }) {
                   cursor-pointer
                   transition
                 `}
-              >
-                {[1, 2, 3, 4].map((qty) => (
-                  <option key={qty} value={qty}>
-                    {qty}
-                  </option>
-                ))}
-              </select>
-
-              {/* Custom Arrow Icon (using Tailwind classes for a clean look) */}
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
                 >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                </svg>
-              </div>
-            </div>
-            {/* 🛑 End of Custom Dropdown Wrapper */}
+                  {[1, 2, 3, 4].map((qty) => (
+                    <option key={qty} value={qty}>
+                      {qty}
+                    </option>
+                  ))}
+                </select>
 
-          </div>
-            <button className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800">
+                {/* Custom Arrow Icon (using Tailwind classes for a clean look) */}
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+              {/* 🛑 End of Custom Dropdown Wrapper */}
+            </div>
+            <Link
+              href="/cart"
+              className="
+    mt-6 
+    w-full 
+    bg-black 
+    text-white 
+    py-3 
+    rounded-lg 
+    text-center
+    font-medium 
+    hover:bg-gray-800
+    block             {/* ⬅️ ADD THIS CLASS */}
+  "
+            >
               Add to Cart ({selectedSize})
-            </button>
+            </Link>
           </div>
         </div>
       </div>
