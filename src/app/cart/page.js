@@ -1,279 +1,183 @@
-// "use client";
-
-// import Image from "next/image";
-// import Navbar from "../components/Navbar";
-// import Footer from "../components/Footer";
-
-// // Dummy cart data
-// const cartItems = [
-//   { id: 1, name: "Purple T-shirt (Men)", price: "₹ 1199", imageSrc: "/images/men3.jpg", size: "S", quantity: 1, color: "Purple", gender: "Men" },
-//   { id: 2, name: "Green T-shirt (Women)", price: "₹ 1499", imageSrc: "/images/women1.jpg", size: "S", quantity: 1, color: "Green", gender: "Women" },
-// ];
-
-// // Individual Cart Item
-// const CartItem = ({ item }) => {
-//   return (
-//     <div className="flex items-start justify-between p-5 bg-white border border-black/10 rounded-2xl shadow-sm hover:shadow-md transition mb-6">
-
-//       {/* Left */}
-//       <div className="flex items-start space-x-5">
-
-//         {/* Image */}
-//         <Image
-//           src={item.imageSrc}
-//           alt={item.name}
-//           width={110}
-//           height={110}
-//           className="rounded-xl object-cover w-28 h-28 border border-black/10"
-//         />
-
-//         {/* Details */}
-//         <div className="flex flex-col">
-//           <h3 className="text-xl font-medium tracking-tight text-gray-900">
-//             {item.name}
-//           </h3>
-
-//           {/* Size & Qty */}
-//           <div className="flex items-center gap-3 mt-2">
-//             <span className="px-3 py-1 text-xs font-medium rounded-full border border-black/20 text-gray-900">
-//               Size: {item.size}
-//             </span>
-//             <span className="px-3 py-1 text-xs font-medium rounded-full border border-black/20 text-gray-900">
-//               Qty: {item.quantity}
-//             </span>
-//           </div>
-
-//           {/* Actions */}
-//           <div className="flex gap-3 mt-4">
-//             <button className="px-4 py-1.5 text-sm font-medium bg-black text-white rounded-lg hover:bg-gray-800 transition">
-//               Buy Now
-//             </button>
-//             <button className="px-4 py-1.5 text-sm font-medium bg-white text-black rounded-lg border border-black hover:bg-black hover:text-white transition">
-//               Remove
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Price */}
-//       <div className="text-right">
-//         <p className="text-xl font-semibold text-gray-900">{item.price}</p>
-//         <p className="text-xs text-gray-500 mt-1">MRP incl. taxes</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// // Main Page
-// export default function CartPage() {
-//   return (
-//     <div className="min-h-screen flex flex-col bg-white">
-//       <Navbar />
-
-//       <main className="flex-grow py-12">
-//         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <h1 className="text-3xl font-semibold mb-10 text-gray-900">Your Cart</h1>
-
-//           {/* Items */}
-//           <div className="space-y-4">
-//             {cartItems.map((item) => (
-//               <CartItem key={item.id} item={item} />
-//             ))}
-//           </div>
-
-//           {/* Summary */}
-//           <div className="mt-10 p-6 bg-white border border-black/10 rounded-2xl shadow-sm">
-//             <h2 className="text-2xl font-semibold mb-6 text-gray-900">Order Summary</h2>
-
-//             <div className="flex justify-between text-lg mb-3">
-//               <p>Total Items</p>
-//               <p>{cartItems.length}</p>
-//             </div>
-
-//             <div className="border-t border-black/10 pt-4 mt-2 flex justify-between text-xl font-bold">
-//               <p>Total</p>
-//               <p>₹ 2698</p>
-//             </div>
-//           </div>
-
-//           {/* Checkout */}
-//           <button className="mt-6 w-full py-3 text-lg font-medium bg-black text-white rounded-xl hover:bg-gray-800 transition">
-//             Proceed to Checkout
-//           </button>
-//         </div>
-//       </main>
-
-//       <Footer />
-//     </div>
-//   );
-// }
-
 "use client";
 
+import { useCart } from "@/context/CartContext"; 
 import { useState } from "react";
 import Image from "next/image";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Purple T-shirt (Men)",
-      price: "₹ 1199",
-      imageSrc: "/images/men3.jpg",
-      size: "S",
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: "Green T-shirt (Women)",
-      price: "₹ 1499",
-      imageSrc: "/images/women1.jpg",
-      size: "S",
-      quantity: 1,
-    },
-  ]);
-
+  const { cartItems, removeFromCart, clearCart } = useCart();
   const [removingItem, setRemovingItem] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
-  const handleRemove = (id) => {
-    setRemovingItem(id);
-
+  const handleRemove = (id, size) => {
+    setRemovingItem(`${id}-${size}`);
     setTimeout(() => {
-      setCartItems((prev) => prev.filter((item) => item.id !== id));
+      removeFromCart(id, size);
       setRemovingItem(null);
     }, 350);
   };
 
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + Number(item.price.replace("₹ ", "")),
+    (sum, item) => sum + (item.price * item.quantity),
     0
   );
 
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartItems, totalPrice }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("Order Placed Successfully!");
+        clearCart();
+        router.push("/");
+      } else {
+        toast.error(data.error || "Please sign in to checkout");
+      }
+    } catch (err) {
+      toast.error("Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <main className="flex-grow py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-semibold mb-10">Your Cart</h1>
+    <div className="min-h-screen bg-[#FAFAFA] text-gray-900">
+      <main className="max-w-7xl mx-auto px-6 py-10 lg:py-16">
+        
+        {/* Page Header */}
+        <div className="mb-10 flex items-baseline justify-between">
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-2">
+              Review Bag
+            </span>
+            <h1 className="text-3xl font-light tracking-tight">Your Selection</h1>
+          </div>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">
+            {cartItems.length} {cartItems.length === 1 ? 'Item' : 'Items'}
+          </p>
+        </div>
 
-          {/* If cart is empty */}
-          {cartItems.length === 0 && (
-            <div className="text-center ">
-              <Image
-                src="/images/cart.png"
-                alt="Empty Cart"
-                width={200}
-                height={200}
-                className="mx-auto mb-6"
-              />
-              <h2 className="text-2xl font-semibold mb-4">
-                Your cart is empty
-              </h2>
-              <p className="text-gray-600">
-                Add items to your cart to continue shopping
-              </p>
-              <Link
-                href="/"
-                className="
-    mt-6
-    inline-block
-    px-8 py-3 
-    text-base font-medium
-    rounded-lg
-    bg-black text-white
-    border border-black
-    transition-all duration-200
-    hover:bg-white hover:text-black
-  "
-              >
-                Shop Now
-              </Link>
-            </div>
-          )}
-
-          {/* If cart has items */}
-          {cartItems.length > 0 && (
-            <>
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`flex items-start justify-between p-5 bg-white border border-black/10 rounded-2xl shadow-sm transition-all duration-300 mb-6
-                      ${
-                        removingItem === item.id
-                          ? "opacity-0 translate-y-5"
-                          : ""
-                      }
-                    `}
+        {cartItems.length === 0 ? (
+          <div className="text-center py-32 border border-dashed border-gray-200 rounded-3xl bg-white/50 backdrop-blur-sm">
+            <h2 className="text-xl font-light mb-8 text-gray-500 italic">Your bag is currently empty.</h2>
+            <Link 
+              href="/" 
+              className="px-12 py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-gray-800 transition-all rounded-full shadow-lg"
+            >
+              Start Exploring
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            
+            {/* Left Side: Solid White Section */}
+            <div className="lg:col-span-7 xl:col-span-8 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-8 lg:p-12">
+              <div className="flex flex-col">
+                {cartItems.map((item, index) => (
+                  <div 
+                    key={`${item._id}-${item.size}`} 
+                    className={`flex gap-6 lg:gap-10 py-10 first:pt-0 border-b border-gray-200/60 transition-all duration-500 last:border-0 ${
+                      removingItem === `${item._id}-${item.size}` ? "opacity-0 -translate-x-5" : "opacity-100"
+                    }`}
                   >
-                    <div className="flex items-start space-x-5">
-                      <Image
-                        src={item.imageSrc}
-                        alt={item.name}
-                        width={110}
-                        height={110}
-                        className="rounded-xl object-cover w-28 h-28 border border-black/10"
+                    {/* Compact Image Container */}
+                    <div className="relative w-24 sm:w-32 aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden shrink-0 border border-gray-100">
+                      <Image 
+                        src={item.imageSrc} 
+                        alt={item.name} 
+                        fill 
+                        className="object-cover" 
                       />
-
-                      <div className="flex flex-col">
-                        <h3 className="text-xl font-medium">{item.name}</h3>
-
-                        <div className="flex items-center gap-3 mt-2">
-                          <span className="px-3 py-1 text-xs font-medium rounded-full border">
-                            Size: {item.size}
-                          </span>
-                          <span className="px-3 py-1 text-xs font-medium rounded-full border">
-                            Qty: {item.quantity}
-                          </span>
-                        </div>
-
-                        <div className="flex gap-3 mt-4">
-                          <button className="px-4 py-1.5 text-sm font-medium bg-black text-white rounded-lg hover:bg-gray-800 transition">
-                            Buy Now
-                          </button>
-                          <button
-                            onClick={() => handleRemove(item.id)}
-                            className="px-4 py-1.5 text-sm font-medium bg-white text-black rounded-lg border hover:bg-black hover:text-white transition"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
                     </div>
+                    
+                    {/* Item Info Detail */}
+                    <div className="flex-1 flex flex-col justify-between py-1">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <Link href={`/product/${item.slug}`} className="hover:text-gray-500 transition-colors">
+                            <h3 className="text-lg font-light tracking-tight mb-2">{item.name}</h3>
+                          </Link>
+                          <div className="flex gap-4 items-center">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                              Size: <span className="text-gray-900">{item.size}</span>
+                            </span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                              Qty: <span className="text-gray-900">{item.quantity}</span>
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-[15px] font-medium text-gray-900">₹{item.price * item.quantity}</p>
+                      </div>
 
-                    <div className="text-right">
-                      <p className="text-xl font-semibold">{item.price}</p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        MRP incl. taxes
-                      </p>
+                      {/* Improved Minimalist Remove Button */}
+                      <button 
+                        onClick={() => handleRemove(item._id, item.size)} 
+                        className="w-fit flex items-center gap-2 group mt-6"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-50 transition-colors border border-gray-100">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 group-hover:text-red-500 transition-colors">
+                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                          </svg>
+                        </div>
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 group-hover:text-red-500 transition-colors">
+                          Remove
+                        </span>
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
+            </div>
 
-              {/* Summary */}
-              <div className="mt-10 p-6 bg-white border border-black/10 rounded-2xl shadow-sm">
-                <h2 className="text-2xl font-semibold mb-6">Order Summary</h2>
-
-                <div className="flex justify-between text-lg mb-3">
-                  <p>Total Items</p>
-                  <p>{cartItems.length}</p>
+            {/* Right Side: Order Summary */}
+            <div className="lg:col-span-5 xl:col-span-4 sticky top-24">
+              <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100">
+                <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-900 mb-8 border-b border-gray-100 pb-4">
+                  Summary
+                </h2>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex justify-between text-sm text-gray-500 font-light">
+                    <span>Subtotal</span>
+                    <span>₹{totalPrice}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-500 font-light">
+                    <span>Shipping</span>
+                    <span className="text-green-600 uppercase text-[10px] font-bold tracking-tighter">Complimentary</span>
+                  </div>
                 </div>
 
-                <div className="border-t pt-4 mt-2 flex justify-between text-xl font-bold">
-                  <p>Total</p>
-                  <p>₹ {totalPrice}</p>
+                <div className="border-t border-gray-100 pt-6 flex justify-between items-baseline mb-10">
+                  <p className="text-sm font-bold uppercase tracking-widest text-gray-900">Total</p>
+                  <p className="text-3xl font-light tracking-tighter text-gray-900">₹{totalPrice}</p>
                 </div>
+
+                <button 
+                  onClick={handleCheckout} 
+                  disabled={isSubmitting}
+                  className="w-full py-5 bg-black text-white text-[11px] font-bold uppercase tracking-[0.3em] rounded-full hover:bg-gray-800 transition-all shadow-xl active:scale-95 disabled:bg-gray-300"
+                >
+                  {isSubmitting ? "Processing..." : "Place Order"}
+                </button>
+
+                <p className="mt-6 text-[9px] text-gray-400 text-center uppercase tracking-widest">
+                  Secure Checkout Protected
+                </p>
               </div>
+            </div>
 
-              {/* Checkout */}
-              <button className="mt-6 w-full py-3 text-lg font-medium bg-black text-white rounded-xl hover:bg-gray-800 transition">
-                Proceed to Checkout
-              </button>
-            </>
-          )}
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );

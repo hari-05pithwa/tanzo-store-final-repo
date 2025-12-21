@@ -6,3 +6,16 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Customizing the Sonner Progress Bar/Line */
+[data-sonner-toast] [data-progress] {
+  background: #000 !important; /* Matches your Tanzo black theme */
+  height: 3px !important;
+}
+
+/* Optional: Make the toast look more like your premium brand */
+[data-sonner-toast] {
+  border-radius: 12px !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  font-family: inherit;
+}

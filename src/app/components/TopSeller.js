@@ -1,88 +1,134 @@
-// components/TopSellers.jsx - FIXED FOR PERFECT IMAGE CONTAINMENT
+// "use client";
+// import React, { useEffect, useState } from "react";
+// import Image from "next/image";
+// import Link from "next/link";
 
-import React from "react";
+// export default function TopSellers() {
+//   const [products, setProducts] = useState([]);
+
+//   useEffect(() => {
+//     fetch("/api/products")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         const allProducts = data.products || [];
+//         // Show the top 3 items on the home page
+//         setProducts(allProducts.slice(0, 3));
+//       })
+//       .catch((err) => console.error("Error fetching top sellers:", err));
+//   }, []);
+
+//   return (
+//     <section className="bg-[#FAFAFA] py-32">
+//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+//         <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 mb-4 block text-center">
+//           Customer Favorites
+//         </span>
+//         <h2 className="text-4xl font-light tracking-tight text-center text-gray-900 mb-20">
+//           Top Sellers
+//         </h2>
+
+//         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-16">
+//           {products.map((product) => (
+//             <Link 
+//               key={product._id} 
+//               href={`/product/${product.slug}`} 
+//               className="group flex flex-col items-center text-center"
+//             >
+//               {/* Product Image Container */}
+//               <div className="w-full aspect-[4/5] overflow-hidden mb-8 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center p-4 transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
+//                 <Image
+//                   src={product.imageSrc}
+//                   alt={product.name}
+//                   width={400}
+//                   height={500}
+//                   className="transition duration-500 group-hover:scale-105 object-contain"
+//                 />
+//               </div>
+
+//               {/* Info */}
+//               <h3 className="text-lg font-medium text-gray-800 mb-2 tracking-tight">
+//                 {product.name}
+//               </h3>
+//               <p className="text-gray-500 font-light mb-6">
+//                 ₹{product.price}
+//               </p>
+
+//               {/* CTA */}
+//               <button className="px-8 py-2.5 border border-black text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all duration-300">
+//                 View Detail
+//               </button>
+//             </Link>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
-// Dummy data for the 3 top-selling products... (data remains unchanged)
-const topSellers = [
-  {
-    id: 1,
-    name: "Classic Tee Men (Park)",
-    price: "₹1199",
-    imageSrc: "/images/men1.jpg",
-  },
-  {
-    id: 2,
-    name: "Classic Tee Women (Cartoon)",
-    price: "₹1299",
-    imageSrc: "/images/women6.jpg",
-  },
-  {
-    id: 3,
-    name: "Classic Tee Men (Block)",
-    price: "₹1199",
-    imageSrc: "/images/men3.jpg",
-  },
-];
-
-/**
- * Renders the 3-column Top Seller product grid section.
- */
 export default function TopSellers() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        const allProducts = data.products || [];
+        setProducts(allProducts.slice(0, 3));
+      })
+      .catch((err) => console.error("Error fetching top sellers:", err));
+  }, []);
+
   return (
-    <section className="bg-[#FAFAFA] pb-40">
+    <section className="bg-[#FAFAFA] py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-normal tracking-wide text-center text-gray-900 mb-16 md:mb-8">
-          Top Seller's
+        <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 mb-4 block text-center">
+          Customer Favorites
+        </span>
+        <h2 className="text-4xl font-light tracking-tight text-center text-gray-900 mb-20">
+          Top Sellers
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
-          {topSellers.map((product) => (
-            <div
-              key={product.id}
-              className="group flex flex-col items-center text-center"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-16">
+          {products.map((product) => (
+            <Link 
+              key={product._id} 
+              href={`/product/${product.slug}`} 
+              className="group flex flex-col items-center"
             >
-              {/* Product Image Area: The parent container is now simpler */}
-              {/* Added w-full max-w-sm for responsive size control */}
-              <div className="w-full max-w-sm flex justify-center items-center overflow-hidden mb-6">
+              {/* Image Container: Gallery Style */}
+              <div className="relative w-full aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 mb-8 transition-all duration-700 ease-in-out group-hover:shadow-2xl group-hover:-translate-y-2">
                 <Image
                   src={product.imageSrc}
                   alt={product.name}
-                  // *** FIX 1: Explicitly define width and height for Contain/Optimization ***
-                  width={400}
-                  height={400}
-                  // *** FIX 2: Use object-contain Tailwind class for the CSS property ***
-                  // Removed layout="fill" and objectFit="contain" props
-                  className="transition duration-300 group-hover:opacity-90 object-contain rounded-lg shadow-md"
-                  // The key change is applying rounded-lg here and removing unnecessary padding/shadow classes.
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-700 scale-[1.01] group-hover:scale-110"
                 />
+                {/* Subtle Overlay on Hover */}
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/5" />
               </div>
 
-              {/* Product Info */}
-              <div className="w-full">
-                <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
+              {/* Info: Minimalist Boutique Style */}
+              <div className="text-center px-4">
+                <h3 className="text-[15px] font-medium text-gray-900 mb-1 tracking-tight">
                   {product.name}
                 </h3>
-
-                <p className="text-xl font-normal text-gray-900 mb-6">
-                  {product.price}
+                <p className="text-sm font-light text-gray-500 mb-6">
+                  ₹{product.price}
                 </p>
 
-                {/* Add to Cart Button */}
-                <button
-                  className="
-                      w-full max-w-xs px-6 py-3 text-base font-medium 
-                      border border-black 
-                      bg-white text-black 
-                      transition duration-200 
-                      hover:bg-black hover:text-white
-                      focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2
-                    "
-                >
-                  Add to Cart
-                </button>
+                {/* Refined Button */}
+                <div className="overflow-hidden inline-block">
+                  <span className="relative inline-block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-gray-900 after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-500 after:origin-left pb-1">
+                    View Detail
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -1,11 +1,9 @@
-
-import CtaSection from "./components/CtaSection";
-import CtaSection2 from "./components/CtaSection2";
-import Footer from "./components/Footer";
+import BrandPhilosophy from "./components/BrandPhilosophy";
 import HeroSection from "./components/Hero";
 import MenSection from "./components/MenSection";
 import TopSellers from "./components/TopSeller";
 import WomenSection from "./components/WomenSection";
+import LifestyleBanner from "./components/LifestyleBanner";
 
 export default function Home() {
   return (
@@ -15,10 +13,10 @@ export default function Home() {
       <HeroSection />
       <TopSellers/>
       <MenSection/>
-      <CtaSection/>
+      <BrandPhilosophy/>
       <WomenSection/>
-      <CtaSection2/>
-      {/* <Footer/> */}
+      <LifestyleBanner/>
+
     </main>
   );
 }
