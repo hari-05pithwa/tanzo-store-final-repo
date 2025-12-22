@@ -29,32 +29,78 @@
 // export const config = {
 //   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 // };import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+
+
+
+
+
+
+
+
+
+// import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+// import { NextResponse } from "next/server";
+
+// const isAdminRoute = createRouteMatcher(['/admin(.*)']);
+
+// export default clerkMiddleware(async (auth, req) => {
+//   if (isAdminRoute(req)) {
+//     const session = await auth();
+    
+//     // This looks for the "email" field in the JWT template we created
+//     const userEmail = session.sessionClaims?.email;
+//     const adminEmail = "haripithwa2005@gmail.com".toLowerCase();
+//     // DEBUG: Check your VS Code terminal to see this output
+//     console.log("Attempting admin access. Email found in session:", userEmail);
+
+//     // const adminEmail = "haripithwa2005@gmail.com"; 
+
+//     if (!session.userId || userEmail !== adminEmail) {
+//        console.log("Access Denied. Redirecting to home.");
+//        return NextResponse.redirect(new URL("/", req.url));
+//     }
+    
+//     console.log("Access Granted to Admin.");
+//   }
+// });
+
+// export const config = {
+//   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// middleware.js
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 
-const isAdminRoute = createRouteMatcher(['/admin(.*)']);
+const isPublicRoute = createRouteMatcher([
+  '/', 
+  '/explore', 
+  '/product(.*)', 
+  '/sign-in(.*)', 
+  '/sign-up(.*)',
+  '/api/products(.*)' // Ensure your API is accessible
+]);
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isAdminRoute(req)) {
-    const session = await auth();
-    
-    // This looks for the "email" field in the JWT template we created
-    const userEmail = session.sessionClaims?.email;
-    const adminEmail = "haripithwa2005@gmail.com".toLowerCase();
-    // DEBUG: Check your VS Code terminal to see this output
-    console.log("Attempting admin access. Email found in session:", userEmail);
-
-    // const adminEmail = "haripithwa2005@gmail.com"; 
-
-    if (!session.userId || userEmail !== adminEmail) {
-       console.log("Access Denied. Redirecting to home.");
-       return NextResponse.redirect(new URL("/", req.url));
-    }
-    
-    console.log("Access Granted to Admin.");
+export default clerkMiddleware((auth, request) => {
+  if (!isPublicRoute(request)) {
+    auth().protect();
   }
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
