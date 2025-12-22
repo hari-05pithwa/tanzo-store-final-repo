@@ -876,6 +876,170 @@
 
 
 
+// "use client";
+// import { useEffect, useState } from "react";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { toast } from "sonner";
+
+// export default function OrdersPage() {
+//   const [orders, setOrders] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [showModal, setShowModal] = useState(false);
+//   const [orderToCancel, setOrderToCancel] = useState(null);
+
+//   const fetchOrders = () => {
+//     fetch("/api/orders")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         setOrders(data.orders || []);
+//         setLoading(false);
+//       })
+//       .catch(() => setLoading(false));
+//   };
+
+//   useEffect(() => { fetchOrders(); }, []);
+
+//   const handleCancel = async () => {
+//     if (!orderToCancel) return;
+//     try {
+//       const res = await fetch(`/api/orders/${orderToCancel}`, { method: "DELETE" });
+//       if (res.ok) {
+//         toast.success("Order Cancelled");
+//         setOrders(orders.filter(order => order._id !== orderToCancel));
+//       } else {
+//         toast.error("Failed to cancel");
+//       }
+//     } catch (error) {
+//       toast.error("Error occurred");
+//     } finally {
+//       setShowModal(false);
+//       setOrderToCancel(null);
+//     }
+//   };
+
+//   if (loading) return (
+//     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
+//       <div className="w-10 h-[1px] bg-black animate-pulse mb-4"></div>
+//       <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-gray-400">Retrieving Archive</p>
+//     </div>
+//   );
+
+//   return (
+//     <div className="bg-[#FAFAFA] min-h-screen pb-32">
+//       {/* Cancellation Confirmation Modal */}
+//       {showModal && (
+//         <div className="fixed inset-0 bg-white/90 backdrop-blur-md z-[100] flex items-center justify-center p-6">
+//           <div className="max-w-md w-full text-center space-y-8 bg-white p-10 border border-gray-100 shadow-2xl">
+//             <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-red-600">Action Required</span>
+//             <h2 className="text-3xl font-light tracking-tighter uppercase text-gray-900">Cancel Order?</h2>
+//             <p className="text-[11px] text-gray-500 uppercase tracking-widest leading-loose">This will permanently remove the transaction from your digital history.</p>
+//             <div className="flex flex-col gap-4 pt-4">
+//               <button onClick={handleCancel} className="w-full py-5 bg-red-600 text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-red-700 transition-colors shadow-lg">Confirm Cancellation</button>
+//               <button onClick={() => setShowModal(false)} className="w-full py-5 border border-gray-200 text-[10px] font-bold uppercase tracking-[0.3em] hover:border-black transition-colors">Go Back</button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       <div className="max-w-6xl mx-auto px-6 pt-32">
+//         <div className="mb-20 border-b border-gray-200 pb-12">
+//           <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-4">Personal Dashboard</span>
+//           <h1 className="text-5xl font-light tracking-tighter text-gray-900 uppercase">My Archive</h1>
+//         </div>
+
+//         {orders.length === 0 ? (
+//           <div className="text-center py-40">
+//             <p className="text-[11px] uppercase tracking-[0.4em] text-gray-300 mb-10">Your transaction history is empty.</p>
+//             <Link href="/explore" className="text-[11px] font-bold uppercase tracking-widest border-b-2 border-black pb-1 hover:text-gray-500 transition-colors">Begin Exploration</Link>
+//           </div>
+//         ) : (
+//           <div className="space-y-16">
+//             {orders.map((order) => (
+//               <div key={order._id} className="bg-white border border-gray-200 rounded-sm shadow-sm overflow-hidden group">
+//                 {/* Enhanced Order Header */}
+//                 <div className="bg-gray-50/50 px-8 py-8 border-b border-gray-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+//                   <div className="flex flex-wrap items-center gap-8">
+//                     <div>
+//                         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Order Reference</span>
+//                         <span className="text-[13px] font-medium tracking-tighter text-gray-900">#{order._id.slice(-8).toUpperCase()}</span>
+//                     </div>
+//                     <div className="h-10 w-[1px] bg-gray-200 hidden lg:block" />
+//                     <div>
+//                         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Status</span>
+//                         <div className={`text-[9px] font-bold uppercase tracking-[0.2em] py-1.5 px-4 rounded-full border shadow-sm ${
+//                           order.status === 'Pending' ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-black bg-black text-white'
+//                         }`}>
+//                           {order.status}
+//                         </div>
+//                     </div>
+//                     <div className="h-10 w-[1px] bg-gray-200 hidden lg:block" />
+//                     <div>
+//                         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Order Date</span>
+//                         <span className="text-[11px] uppercase tracking-widest text-gray-700 font-medium">{new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+//                     </div>
+//                   </div>
+                  
+//                   <div className="lg:text-right w-full lg:w-auto pt-6 lg:pt-0 border-t lg:border-t-0 border-gray-100">
+//                     <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Archive Total</span>
+//                     <p className="text-3xl font-light tracking-tighter text-gray-900">₹{order.totalAmount}</p>
+//                   </div>
+//                 </div>
+
+//                 {/* Product List: Increased Image Size & Colors */}
+//                 <div className="p-8">
+//                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+//                     {order.items.map((item, idx) => (
+//                       <div key={idx} className="flex gap-6 items-center bg-white p-4 border border-gray-50 rounded-sm hover:border-gray-200 transition-all duration-300">
+//                         <div className="relative w-24 h-32 bg-gray-100 rounded-sm overflow-hidden flex-shrink-0 shadow-sm">
+//                           <Image 
+//                             src={item.image} 
+//                             alt={item.name} 
+//                             fill 
+//                             className="object-cover transition-transform duration-700 group-hover:scale-105" 
+//                           />
+//                         </div>
+//                         <div className="space-y-2 min-w-0">
+//                           <p className="text-[12px] font-bold uppercase tracking-[0.15em] text-gray-900 leading-tight">{item.name}</p>
+//                           <div className="flex flex-col gap-1">
+//                             <p className="text-[10px] text-gray-500 uppercase tracking-widest">Quantity: <span className="text-black font-medium">{item.quantity}</span></p>
+//                             <p className="text-[11px] font-medium tracking-widest text-gray-900">Unit: ₹{item.price}</p>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     ))}
+//                   </div>
+                  
+//                   {/* Action Footer: High Visibility Button */}
+//                   <div className="mt-10 pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+//                      <p className="text-[9px] text-gray-400 uppercase tracking-[0.2em]">Full global tracking available upon dispatch.</p>
+//                      <button 
+//                         onClick={() => {setOrderToCancel(order._id); setShowModal(true)}} 
+//                         className="w-full sm:w-auto px-8 py-3 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-3 active:scale-95"
+//                       >
+//                         <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+//                         Request Cancellation
+//                       </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -898,15 +1062,19 @@ export default function OrdersPage() {
       .catch(() => setLoading(false));
   };
 
-  useEffect(() => { fetchOrders(); }, []);
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   const handleCancel = async () => {
     if (!orderToCancel) return;
     try {
-      const res = await fetch(`/api/orders/${orderToCancel}`, { method: "DELETE" });
+      const res = await fetch(`/api/orders/${orderToCancel}`, {
+        method: "DELETE",
+      });
       if (res.ok) {
         toast.success("Order Cancelled");
-        setOrders(orders.filter(order => order._id !== orderToCancel));
+        setOrders(orders.filter((order) => order._id !== orderToCancel));
       } else {
         toast.error("Failed to cancel");
       }
@@ -918,12 +1086,15 @@ export default function OrdersPage() {
     }
   };
 
-  if (loading) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
-      <div className="w-10 h-[1px] bg-black animate-pulse mb-4"></div>
-      <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-gray-400">Retrieving Archive</p>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
+        <div className="w-10 h-[1px] bg-black animate-pulse mb-4"></div>
+        <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-gray-400">
+          Retrieving Archive
+        </p>
+      </div>
+    );
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen pb-32">
@@ -931,12 +1102,29 @@ export default function OrdersPage() {
       {showModal && (
         <div className="fixed inset-0 bg-white/90 backdrop-blur-md z-[100] flex items-center justify-center p-6">
           <div className="max-w-md w-full text-center space-y-8 bg-white p-10 border border-gray-100 shadow-2xl">
-            <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-red-600">Action Required</span>
-            <h2 className="text-3xl font-light tracking-tighter uppercase text-gray-900">Cancel Order?</h2>
-            <p className="text-[11px] text-gray-500 uppercase tracking-widest leading-loose">This will permanently remove the transaction from your digital history.</p>
+            <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-red-600">
+              Action Required
+            </span>
+            <h2 className="text-3xl font-light tracking-tighter uppercase text-gray-900">
+              Cancel Order?
+            </h2>
+            <p className="text-[11px] text-gray-500 uppercase tracking-widest leading-loose">
+              This will permanently remove the transaction from your digital
+              history.
+            </p>
             <div className="flex flex-col gap-4 pt-4">
-              <button onClick={handleCancel} className="w-full py-5 bg-red-600 text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-red-700 transition-colors shadow-lg">Confirm Cancellation</button>
-              <button onClick={() => setShowModal(false)} className="w-full py-5 border border-gray-200 text-[10px] font-bold uppercase tracking-[0.3em] hover:border-black transition-colors">Go Back</button>
+              <button
+                onClick={handleCancel}
+                className="w-full py-5 bg-red-600 text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-red-700 transition-colors shadow-lg"
+              >
+                Confirm Cancellation
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="w-full py-5 border border-gray-200 text-[10px] font-bold uppercase tracking-[0.3em] hover:border-black transition-colors"
+              >
+                Go Back
+              </button>
             </div>
           </div>
         </div>
@@ -944,82 +1132,151 @@ export default function OrdersPage() {
 
       <div className="max-w-6xl mx-auto px-6 pt-32">
         <div className="mb-20 border-b border-gray-200 pb-12">
-          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-4">Personal Dashboard</span>
-          <h1 className="text-5xl font-light tracking-tighter text-gray-900 uppercase">My Archive</h1>
+          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-4">
+            Personal Dashboard
+          </span>
+          <h1 className="text-5xl font-light tracking-tighter text-gray-900 uppercase">
+            My Orders
+          </h1>
         </div>
 
         {orders.length === 0 ? (
           <div className="text-center py-40">
-            <p className="text-[11px] uppercase tracking-[0.4em] text-gray-300 mb-10">Your transaction history is empty.</p>
-            <Link href="/explore" className="text-[11px] font-bold uppercase tracking-widest border-b-2 border-black pb-1 hover:text-gray-500 transition-colors">Begin Exploration</Link>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-gray-300 mb-10">
+              Your transaction history is empty.
+            </p>
+            <Link
+              href="/explore"
+              className="text-[11px] font-bold uppercase tracking-widest border-b-2 border-black pb-1 hover:text-gray-500 transition-colors"
+            >
+              Begin Exploration
+            </Link>
           </div>
         ) : (
           <div className="space-y-16">
             {orders.map((order) => (
-              <div key={order._id} className="bg-white border border-gray-200 rounded-sm shadow-sm overflow-hidden group">
+              <div
+                key={order._id}
+                className="bg-white border border-gray-200 rounded-sm shadow-sm overflow-hidden group"
+              >
                 {/* Enhanced Order Header */}
                 <div className="bg-gray-50/50 px-8 py-8 border-b border-gray-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                   <div className="flex flex-wrap items-center gap-8">
                     <div>
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Order Reference</span>
-                        <span className="text-[13px] font-medium tracking-tighter text-gray-900">#{order._id.slice(-8).toUpperCase()}</span>
+                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">
+                        Order Reference
+                      </span>
+                      <span className="text-[13px] font-medium tracking-tighter text-gray-900">
+                        #{order._id.slice(-8).toUpperCase()}
+                      </span>
                     </div>
                     <div className="h-10 w-[1px] bg-gray-200 hidden lg:block" />
                     <div>
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Status</span>
-                        <div className={`text-[9px] font-bold uppercase tracking-[0.2em] py-1.5 px-4 rounded-full border shadow-sm ${
-                          order.status === 'Pending' ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-black bg-black text-white'
-                        }`}>
-                          {order.status}
-                        </div>
+                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">
+                        Status
+                      </span>
+                      <div
+                        className={`text-[9px] font-bold uppercase tracking-[0.2em] py-1.5 px-4 rounded-full border shadow-sm ${
+                          order.status === "Pending"
+                            ? "border-amber-300 bg-amber-50 text-amber-700"
+                            : "border-black bg-black text-white"
+                        }`}
+                      >
+                        {order.status}
+                      </div>
                     </div>
                     <div className="h-10 w-[1px] bg-gray-200 hidden lg:block" />
                     <div>
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">Order Date</span>
-                        <span className="text-[11px] uppercase tracking-widest text-gray-700 font-medium">{new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">
+                        Order Date & Time
+                      </span>
+                      <span className="text-[11px] uppercase tracking-widest text-gray-700 font-medium flex items-center gap-2">
+                        {new Date(order.createdAt).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                        <span className="text-gray-300">|</span>
+                        {new Date(order.createdAt).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
+                      </span>
                     </div>
                   </div>
-                  
+
                   <div className="lg:text-right w-full lg:w-auto pt-6 lg:pt-0 border-t lg:border-t-0 border-gray-100">
-                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Archive Total</span>
-                    <p className="text-3xl font-light tracking-tighter text-gray-900">₹{order.totalAmount}</p>
+                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-1">
+                      Archive Total
+                    </span>
+                    <p className="text-3xl font-light tracking-tighter text-gray-900">
+                      ₹{order.totalAmount}
+                    </p>
                   </div>
                 </div>
 
-                {/* Product List: Increased Image Size & Colors */}
-                <div className="p-8">
+                {/* Product List & Address Section */}
+                <div className="p-8 space-y-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {order.items.map((item, idx) => (
-                      <div key={idx} className="flex gap-6 items-center bg-white p-4 border border-gray-50 rounded-sm hover:border-gray-200 transition-all duration-300">
+                      <div
+                        key={idx}
+                        className="flex gap-6 items-center bg-white p-4 border border-gray-50 rounded-sm hover:border-gray-200 transition-all duration-300"
+                      >
                         <div className="relative w-24 h-32 bg-gray-100 rounded-sm overflow-hidden flex-shrink-0 shadow-sm">
-                          <Image 
-                            src={item.image} 
-                            alt={item.name} 
-                            fill 
-                            className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
                           />
                         </div>
                         <div className="space-y-2 min-w-0">
-                          <p className="text-[12px] font-bold uppercase tracking-[0.15em] text-gray-900 leading-tight">{item.name}</p>
+                          <p className="text-[12px] font-bold uppercase tracking-[0.15em] text-gray-900 leading-tight">
+                            {item.name}
+                          </p>
                           <div className="flex flex-col gap-1">
-                            <p className="text-[10px] text-gray-500 uppercase tracking-widest">Quantity: <span className="text-black font-medium">{item.quantity}</span></p>
-                            <p className="text-[11px] font-medium tracking-widest text-gray-900">Unit: ₹{item.price}</p>
+                            <p className="text-[10px] text-gray-500 uppercase tracking-widest">
+                              Quantity:{" "}
+                              <span className="text-black font-medium">
+                                {item.quantity}
+                              </span>
+                            </p>
+                            <p className="text-[11px] font-medium tracking-widest text-gray-900">
+                              Unit: ₹{item.price}
+                            </p>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                  
-                  {/* Action Footer: High Visibility Button */}
+
+                  {/* Shipping Address Display */}
+                  <div className="bg-gray-50/30 p-6 border border-gray-100 rounded-sm">
+                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.3em] block mb-3">
+                      Shipping Address
+                    </span>
+                    <p className="text-[11px] text-gray-600 uppercase tracking-widest leading-relaxed max-w-2xl">
+                      {order.shippingAddress?.fullAddress || "Address details unavailable"}
+                    </p>
+                  </div>
+
+                  {/* Action Footer */}
                   <div className="mt-10 pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                     <p className="text-[9px] text-gray-400 uppercase tracking-[0.2em]">Full global tracking available upon dispatch.</p>
-                     <button 
-                        onClick={() => {setOrderToCancel(order._id); setShowModal(true)}} 
-                        className="w-full sm:w-auto px-8 py-3 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-3 active:scale-95"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
-                        Request Cancellation
-                      </button>
+                    <p className="text-[9px] text-gray-400 uppercase tracking-[0.2em]">
+                      Full global tracking available upon dispatch.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setOrderToCancel(order._id);
+                        setShowModal(true);
+                      }}
+                      className="w-full sm:w-auto px-8 py-3 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-3 active:scale-95"
+                    >
+                      <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+                      Request Cancellation
+                    </button>
                   </div>
                 </div>
               </div>

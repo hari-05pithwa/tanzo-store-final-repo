@@ -65,6 +65,20 @@ export async function POST(req) {
       return NextResponse.json({ error: "Shipping address is required" }, { status: 400 });
     }
 
+    // const newOrder = await Order.create({
+    //   userId: user.id,
+    //   customerEmail: user.emailAddresses[0].emailAddress,
+    //   items: cartItems.map(item => ({
+    //     name: item.name,
+    //     quantity: item.quantity,
+    //     price: item.price,
+    //     image: item.imageSrc // Maps imageSrc from cart to 'image' in schema
+    //   })),
+    //   totalAmount: totalPrice,
+    //   shippingAddress: shippingAddress, // Now passed from the frontend
+    //   status: "Processing" // Matches your schema enum
+    // });
+
     const newOrder = await Order.create({
       userId: user.id,
       customerEmail: user.emailAddresses[0].emailAddress,
@@ -72,11 +86,11 @@ export async function POST(req) {
         name: item.name,
         quantity: item.quantity,
         price: item.price,
-        image: item.imageSrc // Maps imageSrc from cart to 'image' in schema
+        image: item.imageSrc 
       })),
       totalAmount: totalPrice,
-      shippingAddress: shippingAddress, // Now passed from the frontend
-      status: "Processing" // Matches your schema enum
+      shippingAddress: shippingAddress, 
+      status: "Pending" // MUST match one of your enum options
     });
 
     return NextResponse.json({ success: true, orderId: newOrder._id }, { status: 201 });
