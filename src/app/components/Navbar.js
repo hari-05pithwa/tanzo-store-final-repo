@@ -321,7 +321,7 @@ export default function Navbar() {
         </Link>
       </SignedIn>
       
-      {isAdmin && (
+      {/* {isAdmin && (
          <Link 
           href="/admin/products" 
           onClick={() => setIsMobileMenuOpen(false)} 
@@ -333,7 +333,7 @@ export default function Navbar() {
         >
           Admin
         </Link>
-      )}
+      )} */}
 
       <SignedOut>
         {mobile && (
