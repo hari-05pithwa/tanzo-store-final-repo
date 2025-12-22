@@ -84,23 +84,33 @@
 
 
 // middleware.js
+// middleware.js
+
+
+
+
+
+
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isPublicRoute = createRouteMatcher([
   '/', 
-  '/explore', 
-  '/product(.*)', 
   '/sign-in(.*)', 
-  '/sign-up(.*)',
-  '/api/products(.*)' // Ensure your API is accessible
+  '/sign-up(.*)', 
+  '/explore(.*)', 
+  '/product(.*)',
+  '/api(.*)' 
 ]);
 
-export default clerkMiddleware((auth, request) => {
+export default clerkMiddleware(async (auth, request) => {
   if (!isPublicRoute(request)) {
-    auth().protect();
+    await auth.protect(); // Use 'await' if you are on Next.js 15
   }
 });
 
 export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
 };
