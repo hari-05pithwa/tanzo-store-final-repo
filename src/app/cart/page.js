@@ -490,22 +490,27 @@
 
 
 
-
 "use client";
 import { useCart } from "@/context/CartContext"; 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs"; // Added Clerk hook
+import { useUser } from "@clerk/nextjs";
 
 export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [address, setAddress] = useState("");
-  const { user } = useUser(); // Get logged-in user details
+  const [isMounted, setIsMounted] = useState(false); // Hydration fix
+  const { user } = useUser();
   const router = useRouter();
+
+  // Ensure component is mounted before rendering cart items
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -526,7 +531,7 @@ export default function CartPage() {
           totalPrice, 
           shippingAddress: { 
             fullAddress: address,
-            fullName: user?.fullName || "Guest Customer" // Pass the name here
+            fullName: user?.fullName || "Guest Customer" 
           } 
         }),
       });
@@ -546,10 +551,76 @@ export default function CartPage() {
     }
   };
 
+  // While mounting, show a simple loading state to prevent "Hydration Mismatch"
+  if (!isMounted) return null;
+
   return (
-    // ... rest of your JSX remains exactly the same as you provided ...
-    <div className="bg-[#FAFAFA] min-h-screen pt-24 md:pt-32 pb-24">
-       {/* (Your existing JSX code here) */}
+    <div className="bg-[#FAFAFA] min-h-screen pt-24 md:pt-32 pb-24 px-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-light uppercase tracking-tighter mb-12">Your Bag</h1>
+
+        {cartItems.length === 0 ? (
+          <div className="text-center py-20 border-t border-zinc-200">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 mb-8">Bag is currently empty</p>
+            <Link href="/explore" className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-black pb-1">
+              Browse Collection
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+            {/* Left Column: Items */}
+            <div className="lg:col-span-2 space-y-8">
+              {cartItems.map((item) => (
+                <div key={item._id} className="flex gap-6 pb-8 border-b border-zinc-100 items-center">
+                  <div className="relative w-24 h-32 bg-zinc-100 overflow-hidden">
+                    <Image src={item.imageSrc} alt={item.name} fill className="object-cover" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <h3 className="text-[12px] font-bold uppercase tracking-widest">{item.name}</h3>
+                    <p className="text-[10px] text-zinc-500 uppercase">Qty: {item.quantity}</p>
+                    <p className="text-sm font-medium">₹{item.price}</p>
+                    <button 
+                      onClick={() => removeFromCart(item._id)}
+                      className="text-[9px] uppercase tracking-widest text-red-500 pt-2"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right Column: Checkout */}
+            <div className="space-y-10">
+              <div className="bg-white p-8 border border-zinc-200 shadow-sm space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Shipping Destination</label>
+                  <textarea 
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Enter full address..."
+                    className="w-full border-b border-zinc-200 py-2 text-sm outline-none focus:border-black min-h-[100px] resize-none"
+                  />
+                </div>
+
+                <div className="pt-4 border-t border-zinc-100">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-[10px] uppercase font-bold tracking-widest">Total</span>
+                    <span className="text-2xl font-light tracking-tighter">₹{totalPrice}</span>
+                  </div>
+                  <button 
+                    onClick={handleCheckout}
+                    disabled={isSubmitting}
+                    className="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 disabled:bg-zinc-200 transition-all"
+                  >
+                    {isSubmitting ? "Finalizing Order..." : "Confirm Checkout"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
