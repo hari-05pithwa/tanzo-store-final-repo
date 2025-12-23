@@ -393,6 +393,166 @@
 
 
 
+// "use client";
+// import { useEffect, useState } from "react";
+// import Link from "next/link";
+// import Image from "next/image";
+// import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
+
+// export default function InventoryPage() {
+//   const [products, setProducts] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [terminatingId, setTerminatingId] = useState(null);
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     fetch("/api/admin/products")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         setProducts(data);
+//         setLoading(false);
+//       })
+//       .catch(() => setLoading(false));
+//   }, []);
+
+//   const deleteProduct = async () => {
+//     if (!terminatingId) return;
+//     try {
+//       const res = await fetch(`/api/admin/products/${terminatingId}`, { method: "DELETE" });
+//       if (res.ok) {
+//         setProducts((prev) => prev.filter((product) => product._id !== terminatingId));
+//         toast.success("Piece successfully removed from inventory");
+//         router.refresh();
+//       }
+//     } catch (error) {
+//       toast.error("Operation failed: System could not remove the item");
+//     } finally {
+//       setTerminatingId(null);
+//     }
+//   };
+
+//   if (loading) return <div className="p-12 text-[10px] uppercase tracking-[0.5em] animate-pulse">Synchronizing Archive...</div>;
+
+//   return (
+//     <div className="max-w-6xl mx-auto px-4 md:px-0 relative pb-20">
+//       {/* TERMINATION MODAL */}
+//       {terminatingId && (
+//         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
+//           <div className="bg-white border border-zinc-200 p-8 md:p-10 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-300">
+//             <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-red-500 block mb-4 text-center md:text-left">Critical Action Required</span>
+//             <h2 className="text-xl md:text-2xl font-light tracking-tighter uppercase mb-2 text-center md:text-left">Confirm Termination</h2>
+//             <p className="text-zinc-500 text-[10px] md:text-[11px] leading-relaxed uppercase tracking-tight mb-8 text-center md:text-left">
+//               You are about to permanently remove this piece from the digital archive. This action is irreversible.
+//             </p>
+//             <div className="flex flex-col md:flex-row gap-3">
+//               <button 
+//                 onClick={() => setTerminatingId(null)}
+//                 className="order-2 md:order-1 flex-1 px-6 py-4 border border-zinc-200 text-[10px] uppercase font-bold tracking-widest hover:bg-zinc-50 transition-colors"
+//               >
+//                 Cancel
+//               </button>
+//               <button 
+//                 onClick={deleteProduct}
+//                 className="order-1 md:order-2 flex-1 px-6 py-4 bg-red-600 text-white text-[10px] uppercase font-bold tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+//               >
+//                 Remove Item
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* HEADER SECTION */}
+//       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-6 pt-6">
+//         <div>
+//           <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 block mb-2">Stock Management</span>
+//           <h1 className="text-3xl md:text-4xl font-light tracking-tighter uppercase text-zinc-900">Product Archive</h1>
+//         </div>
+//         <Link href="/admin/products/new" className="w-full md:w-auto group flex justify-center items-center gap-3 bg-black text-white px-8 py-4 text-[10px] uppercase tracking-[0.3em] font-bold rounded-sm hover:bg-zinc-800 transition-all active:scale-95">
+//           <span>Add New Piece</span>
+//           <span className="group-hover:translate-x-1 transition-transform">+</span>
+//         </Link>
+//       </div>
+
+//       {/* DESKTOP TABLE VIEW (Hidden on Mobile) */}
+//       <div className="hidden md:block bg-white rounded-sm border border-zinc-200 shadow-sm overflow-hidden">
+//         <table className="w-full text-left border-collapse">
+//           <thead>
+//             <tr className="bg-zinc-50/50 border-b border-zinc-100">
+//               <th className="p-6 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">Product Identity</th>
+//               <th className="p-6 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">Category</th>
+//               <th className="p-6 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">Valuation</th>
+//               <th className="p-6 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400 text-right">Actions</th>
+//             </tr>
+//           </thead>
+//           <tbody className="divide-y divide-zinc-50">
+//             {products.map((product) => (
+//               <tr key={product._id} className="group hover:bg-zinc-50/30 transition-colors">
+//                 <td className="p-6">
+//                   <div className="flex items-center gap-5">
+//                     <div className="w-14 h-18 relative bg-zinc-100 rounded-sm overflow-hidden border border-zinc-100 shadow-sm">
+//                       <Image src={product.imageSrc} fill className="object-cover" alt="" sizes="100px" />
+//                     </div>
+//                     <div>
+//                       <p className="text-[12px] font-bold uppercase tracking-tight text-zinc-800">{product.name}</p>
+//                       <p className="text-[9px] text-zinc-400 uppercase tracking-widest mt-1 italic">ARCHIVE REF: {product._id.slice(-6).toUpperCase()}</p>
+//                     </div>
+//                   </div>
+//                 </td>
+//                 <td className="p-6 text-[10px] uppercase tracking-widest text-zinc-500 font-medium">{product.gender}</td>
+//                 <td className="p-6 text-sm font-light tracking-tighter text-zinc-900">₹{product.price.toLocaleString()}</td>
+//                 <td className="p-6 text-right">
+//                   <div className="flex justify-end gap-8">
+//                     <Link href={`/admin/products/edit/${product._id}`} className="text-[9px] uppercase font-bold tracking-widest text-zinc-400 hover:text-black transition-colors underline underline-offset-4 decoration-zinc-200">Edit</Link>
+//                     <button onClick={() => setTerminatingId(product._id)} className="text-[9px] uppercase font-bold tracking-widest text-red-500 hover:text-red-600 transition-colors">Terminate</button>
+//                   </div>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+
+//       {/* MOBILE LIST VIEW (Shown on Mobile) */}
+//       <div className="md:hidden space-y-4">
+//         {products.map((product) => (
+//           <div key={product._id} className="bg-white border border-zinc-200 p-4 rounded-sm shadow-sm flex gap-4">
+//             <div className="w-20 h-28 relative bg-zinc-100 rounded-sm overflow-hidden border border-zinc-100 flex-shrink-0">
+//               <Image src={product.imageSrc} fill className="object-cover" alt="" sizes="150px" />
+//             </div>
+//             <div className="flex flex-col justify-between flex-1 min-w-0">
+//               <div>
+//                 <span className="text-[8px] font-bold uppercase tracking-widest text-zinc-400">{product.gender} • REF {product._id.slice(-6).toUpperCase()}</span>
+//                 <p className="text-[11px] font-bold uppercase tracking-tight text-zinc-800 mt-1 truncate">{product.name}</p>
+//                 <p className="text-sm font-light tracking-tighter text-zinc-900 mt-1">₹{product.price.toLocaleString()}</p>
+//               </div>
+//               <div className="flex gap-4 border-t border-zinc-50 pt-3 mt-2">
+//                 <Link href={`/admin/products/edit/${product._id}`} className="text-[9px] uppercase font-bold tracking-widest text-zinc-400 underline underline-offset-4 decoration-zinc-200">Edit</Link>
+//                 <button onClick={() => setTerminatingId(product._id)} className="text-[9px] uppercase font-bold tracking-widest text-red-500">Terminate</button>
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+      
+//       {products.length === 0 && !loading && (
+//         <div className="py-40 border border-dashed border-zinc-200 rounded-sm text-center text-zinc-400 text-[10px] uppercase tracking-widest">
+//           Archive is currently empty.
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -432,30 +592,24 @@ export default function InventoryPage() {
     }
   };
 
-  if (loading) return <div className="p-12 text-[10px] uppercase tracking-[0.5em] animate-pulse">Synchronizing Archive...</div>;
+  if (loading) return <div className="p-8 text-[10px] uppercase tracking-[0.5em] animate-pulse text-zinc-400">Synchronizing Archive...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-0 relative pb-20">
+    <div className="pb-20">
       {/* TERMINATION MODAL */}
       {terminatingId && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white border border-zinc-200 p-8 md:p-10 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-300">
-            <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-red-500 block mb-4 text-center md:text-left">Critical Action Required</span>
-            <h2 className="text-xl md:text-2xl font-light tracking-tighter uppercase mb-2 text-center md:text-left">Confirm Termination</h2>
-            <p className="text-zinc-500 text-[10px] md:text-[11px] leading-relaxed uppercase tracking-tight mb-8 text-center md:text-left">
+            <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-red-500 block mb-4">Critical Action Required</span>
+            <h2 className="text-xl md:text-2xl font-light tracking-tighter uppercase mb-2">Confirm Termination</h2>
+            <p className="text-zinc-500 text-[10px] md:text-[11px] leading-relaxed uppercase tracking-tight mb-8">
               You are about to permanently remove this piece from the digital archive. This action is irreversible.
             </p>
             <div className="flex flex-col md:flex-row gap-3">
-              <button 
-                onClick={() => setTerminatingId(null)}
-                className="order-2 md:order-1 flex-1 px-6 py-4 border border-zinc-200 text-[10px] uppercase font-bold tracking-widest hover:bg-zinc-50 transition-colors"
-              >
+              <button onClick={() => setTerminatingId(null)} className="order-2 md:order-1 flex-1 px-6 py-4 border border-zinc-200 text-[10px] uppercase font-bold tracking-widest hover:bg-zinc-50 transition-colors">
                 Cancel
               </button>
-              <button 
-                onClick={deleteProduct}
-                className="order-1 md:order-2 flex-1 px-6 py-4 bg-red-600 text-white text-[10px] uppercase font-bold tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-200"
-              >
+              <button onClick={deleteProduct} className="order-1 md:order-2 flex-1 px-6 py-4 bg-red-600 text-white text-[10px] uppercase font-bold tracking-widest hover:bg-red-700 transition-all">
                 Remove Item
               </button>
             </div>
@@ -463,23 +617,23 @@ export default function InventoryPage() {
         </div>
       )}
 
-      {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-6 pt-6">
+      {/* HEADER SECTION - Matches Dashboard Typography */}
+      <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 block mb-2">Stock Management</span>
-          <h1 className="text-3xl md:text-4xl font-light tracking-tighter uppercase text-zinc-900">Product Archive</h1>
+          <h1 className="text-4xl font-light tracking-tighter uppercase">Product Archive</h1>
         </div>
-        <Link href="/admin/products/new" className="w-full md:w-auto group flex justify-center items-center gap-3 bg-black text-white px-8 py-4 text-[10px] uppercase tracking-[0.3em] font-bold rounded-sm hover:bg-zinc-800 transition-all active:scale-95">
+        <Link href="/admin/products/new" className="w-full md:w-auto group flex justify-center items-center gap-3 bg-black text-white px-8 py-4 text-[10px] uppercase tracking-[0.3em] font-bold rounded-sm hover:bg-zinc-800 transition-all">
           <span>Add New Piece</span>
           <span className="group-hover:translate-x-1 transition-transform">+</span>
         </Link>
       </div>
 
-      {/* DESKTOP TABLE VIEW (Hidden on Mobile) */}
-      <div className="hidden md:block bg-white rounded-sm border border-zinc-200 shadow-sm overflow-hidden">
+      {/* DESKTOP TABLE VIEW */}
+      <div className="hidden md:block bg-white rounded-sm border border-zinc-100 shadow-sm overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-zinc-50/50 border-b border-zinc-100">
+            <tr className="bg-zinc-50/50 border-b border-zinc-50">
               <th className="p-6 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">Product Identity</th>
               <th className="p-6 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">Category</th>
               <th className="p-6 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">Valuation</th>
@@ -491,12 +645,12 @@ export default function InventoryPage() {
               <tr key={product._id} className="group hover:bg-zinc-50/30 transition-colors">
                 <td className="p-6">
                   <div className="flex items-center gap-5">
-                    <div className="w-14 h-18 relative bg-zinc-100 rounded-sm overflow-hidden border border-zinc-100 shadow-sm">
+                    <div className="w-14 h-18 relative bg-zinc-100 rounded-sm overflow-hidden border border-zinc-100 flex-shrink-0">
                       <Image src={product.imageSrc} fill className="object-cover" alt="" sizes="100px" />
                     </div>
-                    <div>
-                      <p className="text-[12px] font-bold uppercase tracking-tight text-zinc-800">{product.name}</p>
-                      <p className="text-[9px] text-zinc-400 uppercase tracking-widest mt-1 italic">ARCHIVE REF: {product._id.slice(-6).toUpperCase()}</p>
+                    <div className="min-w-0">
+                      <p className="text-[12px] font-bold uppercase tracking-tight text-zinc-800 truncate">{product.name}</p>
+                      <p className="text-[9px] text-zinc-400 uppercase tracking-widest mt-1 italic">REF: {product._id.slice(-6).toUpperCase()}</p>
                     </div>
                   </div>
                 </td>
@@ -504,8 +658,8 @@ export default function InventoryPage() {
                 <td className="p-6 text-sm font-light tracking-tighter text-zinc-900">₹{product.price.toLocaleString()}</td>
                 <td className="p-6 text-right">
                   <div className="flex justify-end gap-8">
-                    <Link href={`/admin/products/edit/${product._id}`} className="text-[9px] uppercase font-bold tracking-widest text-zinc-400 hover:text-black transition-colors underline underline-offset-4 decoration-zinc-200">Edit</Link>
-                    <button onClick={() => setTerminatingId(product._id)} className="text-[9px] uppercase font-bold tracking-widest text-red-500 hover:text-red-600 transition-colors">Terminate</button>
+                    <Link href={`/admin/products/edit/${product._id}`} className="text-[9px] uppercase font-bold tracking-widest text-zinc-400 hover:text-black transition-colors underline underline-offset-4 decoration-zinc-100">Edit</Link>
+                    <button onClick={() => setTerminatingId(product._id)} className="text-[9px] uppercase font-bold tracking-widest text-red-500 hover:text-red-600">Terminate</button>
                   </div>
                 </td>
               </tr>
@@ -514,21 +668,27 @@ export default function InventoryPage() {
         </table>
       </div>
 
-      {/* MOBILE LIST VIEW (Shown on Mobile) */}
-      <div className="md:hidden space-y-4">
+      {/* MOBILE LIST VIEW - EXACT FIT */}
+      <div className="md:hidden flex flex-col gap-4">
         {products.map((product) => (
-          <div key={product._id} className="bg-white border border-zinc-200 p-4 rounded-sm shadow-sm flex gap-4">
-            <div className="w-20 h-28 relative bg-zinc-100 rounded-sm overflow-hidden border border-zinc-100 flex-shrink-0">
+          <div key={product._id} className="bg-white border border-zinc-100 p-5 rounded-sm shadow-sm flex gap-5 w-full">
+            <div className="w-20 h-28 relative bg-zinc-100 rounded-sm overflow-hidden border border-zinc-50 flex-shrink-0">
               <Image src={product.imageSrc} fill className="object-cover" alt="" sizes="150px" />
             </div>
             <div className="flex flex-col justify-between flex-1 min-w-0">
-              <div>
-                <span className="text-[8px] font-bold uppercase tracking-widest text-zinc-400">{product.gender} • REF {product._id.slice(-6).toUpperCase()}</span>
-                <p className="text-[11px] font-bold uppercase tracking-tight text-zinc-800 mt-1 truncate">{product.name}</p>
-                <p className="text-sm font-light tracking-tighter text-zinc-900 mt-1">₹{product.price.toLocaleString()}</p>
+              <div className="min-w-0">
+                <span className="text-[8px] font-bold uppercase tracking-widest text-zinc-400 block">
+                  {product.gender} • REF {product._id.slice(-6).toUpperCase()}
+                </span>
+                <p className="text-[11px] font-bold uppercase tracking-tight text-zinc-800 mt-1 truncate">
+                  {product.name}
+                </p>
+                <p className="text-sm font-light tracking-tighter text-zinc-900 mt-1">
+                  ₹{product.price.toLocaleString()}
+                </p>
               </div>
-              <div className="flex gap-4 border-t border-zinc-50 pt-3 mt-2">
-                <Link href={`/admin/products/edit/${product._id}`} className="text-[9px] uppercase font-bold tracking-widest text-zinc-400 underline underline-offset-4 decoration-zinc-200">Edit</Link>
+              <div className="flex gap-5 border-t border-zinc-50 pt-3 mt-2">
+                <Link href={`/admin/products/edit/${product._id}`} className="text-[9px] uppercase font-bold tracking-widest text-zinc-400 underline underline-offset-4 decoration-zinc-100">Edit</Link>
                 <button onClick={() => setTerminatingId(product._id)} className="text-[9px] uppercase font-bold tracking-widest text-red-500">Terminate</button>
               </div>
             </div>
@@ -537,7 +697,7 @@ export default function InventoryPage() {
       </div>
       
       {products.length === 0 && !loading && (
-        <div className="py-40 border border-dashed border-zinc-200 rounded-sm text-center text-zinc-400 text-[10px] uppercase tracking-widest">
+        <div className="py-40 border border-dashed border-zinc-100 rounded-sm text-center text-zinc-400 text-[10px] uppercase tracking-widest">
           Archive is currently empty.
         </div>
       )}
