@@ -480,3 +480,17 @@ export default function EditProductPage({ params }) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

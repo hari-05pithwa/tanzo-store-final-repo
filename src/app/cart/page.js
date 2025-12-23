@@ -490,133 +490,471 @@
 
 
 
+// "use client";
+// import { useCart } from "@/context/CartContext"; 
+// import { useState, useEffect } from "react";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
+// import { useUser } from "@clerk/nextjs";
+
+// export default function CartPage() {
+//   const { cartItems, removeFromCart, clearCart } = useCart();
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [address, setAddress] = useState("");
+//   const [isMounted, setIsMounted] = useState(false); // Hydration fix
+//   const { user } = useUser();
+//   const router = useRouter();
+
+//   // Ensure component is mounted before rendering cart items
+//   useEffect(() => {
+//     setIsMounted(true);
+//   }, []);
+
+//   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+//   const handleCheckout = async () => {
+//     if (cartItems.length === 0) return;
+//     if (!address.trim()) {
+//       toast.error("Please provide a shipping address");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const response = await fetch("/api/checkout", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ 
+//           cartItems, 
+//           totalPrice, 
+//           shippingAddress: { 
+//             fullAddress: address,
+//             fullName: user?.fullName || "Guest Customer" 
+//           } 
+//         }),
+//       });
+      
+//       const data = await response.json();
+//       if (response.ok) {
+//         toast.success("Order Placed Successfully!");
+//         clearCart();
+//         router.push("/orders");
+//       } else {
+//         toast.error(data.error || "Submission failed");
+//       }
+//     } catch (err) {
+//       toast.error("Network error.");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   // While mounting, show a simple loading state to prevent "Hydration Mismatch"
+//   if (!isMounted) return null;
+
+//   return (
+//     <div className="bg-[#FAFAFA] min-h-screen pt-24 md:pt-32 pb-24 px-6">
+//       <div className="max-w-6xl mx-auto">
+//         <h1 className="text-4xl font-light uppercase tracking-tighter mb-12">Your Bag</h1>
+
+//         {cartItems.length === 0 ? (
+//           <div className="text-center py-20 border-t border-zinc-200">
+//             <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 mb-8">Bag is currently empty</p>
+//             <Link href="/explore" className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-black pb-1">
+//               Browse Collection
+//             </Link>
+//           </div>
+//         ) : (
+//           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+//             {/* Left Column: Items */}
+//             <div className="lg:col-span-2 space-y-8">
+//               {cartItems.map((item) => (
+//                 <div key={item._id} className="flex gap-6 pb-8 border-b border-zinc-100 items-center">
+//                   <div className="relative w-24 h-32 bg-zinc-100 overflow-hidden">
+//                     <Image src={item.imageSrc} alt={item.name} fill className="object-cover" />
+//                   </div>
+//                   <div className="flex-1 space-y-1">
+//                     <h3 className="text-[12px] font-bold uppercase tracking-widest">{item.name}</h3>
+//                     <p className="text-[10px] text-zinc-500 uppercase">Qty: {item.quantity}</p>
+//                     <p className="text-sm font-medium">₹{item.price}</p>
+//                     <button 
+//                       onClick={() => removeFromCart(item._id)}
+//                       className="text-[9px] uppercase tracking-widest text-red-500 pt-2"
+//                     >
+//                       Remove
+//                     </button>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+
+//             {/* Right Column: Checkout */}
+//             <div className="space-y-10">
+//               <div className="bg-white p-8 border border-zinc-200 shadow-sm space-y-6">
+//                 <div className="space-y-2">
+//                   <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Shipping Destination</label>
+//                   <textarea 
+//                     value={address}
+//                     onChange={(e) => setAddress(e.target.value)}
+//                     placeholder="Enter full address..."
+//                     className="w-full border-b border-zinc-200 py-2 text-sm outline-none focus:border-black min-h-[100px] resize-none"
+//                   />
+//                 </div>
+
+//                 <div className="pt-4 border-t border-zinc-100">
+//                   <div className="flex justify-between items-center mb-6">
+//                     <span className="text-[10px] uppercase font-bold tracking-widest">Total</span>
+//                     <span className="text-2xl font-light tracking-tighter">₹{totalPrice}</span>
+//                   </div>
+//                   <button 
+//                     onClick={handleCheckout}
+//                     disabled={isSubmitting}
+//                     className="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 disabled:bg-zinc-200 transition-all"
+//                   >
+//                     {isSubmitting ? "Finalizing Order..." : "Confirm Checkout"}
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+// //og
+// "use client";
+// import { useCart } from "@/context/CartContext"; 
+// import { useState, useEffect } from "react";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
+// import { useUser } from "@clerk/nextjs";
+
+// export default function CartPage() {
+//   const { cartItems, removeFromCart, clearCart } = useCart();
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [address, setAddress] = useState("");
+//   const [isMounted, setIsMounted] = useState(false);
+//   const { user } = useUser();
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     setIsMounted(true);
+//   }, []);
+
+//   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+//   const handleCheckout = async () => {
+//     if (cartItems.length === 0) return;
+//     if (!address.trim()) {
+//       toast.error("Please provide a shipping address");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const response = await fetch("/api/checkout", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ 
+//           cartItems, 
+//           totalPrice, 
+//           shippingAddress: { 
+//             fullAddress: address,
+//             fullName: user?.fullName || "Guest Customer" 
+//           } 
+//         }),
+//       });
+      
+//       const data = await response.json();
+//       if (response.ok) {
+//         toast.success("Order Placed Successfully!");
+//         clearCart();
+//         router.push("/orders");
+//       } else {
+//         toast.error(data.error || "Submission failed");
+//       }
+//     } catch (err) {
+//       toast.error("Network error.");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   if (!isMounted) return null;
+
+//   return (
+//     <div className="bg-[#FAFAFA] min-h-screen pt-24 md:pt-32 pb-24 px-6">
+//       <div className="max-w-6xl mx-auto">
+//         <h1 className="text-4xl font-light uppercase tracking-tighter mb-12">Your Bag</h1>
+
+//         {cartItems.length === 0 ? (
+//           <div className="text-center py-20 border-t border-zinc-200">
+//             <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 mb-8">Bag is currently empty</p>
+//             <Link href="/explore" className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-black pb-1">
+//               Browse Collection
+//             </Link>
+//           </div>
+//         ) : (
+//           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+//             {/* Left Column: Items */}
+//             <div className="lg:col-span-2 space-y-8">
+//               {cartItems.map((item, index) => (
+//                 <div key={`${item._id}-${item.size}-${index}`} className="flex gap-6 pb-8 border-b border-zinc-100 items-center">
+//                   <div className="relative w-24 h-32 bg-zinc-100 overflow-hidden">
+//                     <Image src={item.imageSrc} alt={item.name} fill className="object-cover" />
+//                   </div>
+//                   <div className="flex-1 space-y-1">
+//                     <h3 className="text-[12px] font-bold uppercase tracking-widest">{item.name}</h3>
+//                     <p className="text-[10px] text-zinc-500 uppercase">Size: {item.size} | Qty: {item.quantity}</p>
+//                     <p className="text-sm font-medium">₹{item.price}</p>
+//                     <button 
+//   onClick={() => removeFromCart(item._id, item.size)}
+//   className="mt-4 px-4 py-2 rounded-full bg-red-500 text-white text-[8px] font-bold uppercase tracking-[0.3em] hover:bg-red-600 active:scale-95 transition-all duration-200 cursor-pointer inline-flex items-center justify-center"
+// >
+//   Remove
+// </button>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+
+//             {/* Right Column: Summary */}
+//             <div className="space-y-10">
+//               <div className="bg-white p-8 border border-zinc-200 shadow-sm space-y-6">
+//                 <div className="space-y-2">
+//                   <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Shipping Destination</label>
+//                   <textarea 
+//                     value={address}
+//                     onChange={(e) => setAddress(e.target.value)}
+//                     placeholder="Enter full address..."
+//                     className="w-full border-b border-zinc-200 py-2 text-sm outline-none focus:border-black min-h-[100px] resize-none"
+//                   />
+//                 </div>
+
+//                 <div className="pt-4 border-t border-zinc-100">
+//                   <div className="flex justify-between items-center mb-6">
+//                     <span className="text-[10px] uppercase font-bold tracking-widest">Total</span>
+//                     <span className="text-2xl font-light tracking-tighter">₹{totalPrice}</span>
+//                   </div>
+//                   <button 
+//                     onClick={handleCheckout}
+//                     disabled={isSubmitting}
+//                     className="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 disabled:bg-zinc-200 transition-all cursor-pointer"
+//                   >
+//                     {isSubmitting ? "Finalizing Order..." : "Confirm Checkout"}
+//                   </button>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
-import { useCart } from "@/context/CartContext"; 
+
+import { useCart } from "@/context/CartContext";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { motion, AnimatePresence } from "framer-motion";
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: "blur(0px)",
+    transition: { duration: 1, ease: [0.16, 1, 0.6, 1] } 
+  },
+  exit: { opacity: 0, scale: 0.95, filter: "blur(10px)", transition: { duration: 0.4 } }
+};
 
 export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [address, setAddress] = useState("");
-  const [isMounted, setIsMounted] = useState(false); // Hydration fix
+  const [isMounted, setIsMounted] = useState(false);
   const { user } = useUser();
   const router = useRouter();
 
-  // Ensure component is mounted before rendering cart items
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => setIsMounted(true), []);
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
-    if (!address.trim()) {
-      toast.error("Please provide a shipping address");
+    if (cartItems.length === 0 || !address.trim()) {
+      toast.error("Shipping address required");
       return;
     }
-
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          cartItems, 
-          totalPrice, 
-          shippingAddress: { 
-            fullAddress: address,
-            fullName: user?.fullName || "Guest Customer" 
-          } 
+        body: JSON.stringify({
+          cartItems,
+          totalPrice,
+          shippingAddress: { fullAddress: address, fullName: user?.fullName || "Guest" },
         }),
       });
-      
-      const data = await response.json();
       if (response.ok) {
-        toast.success("Order Placed Successfully!");
         clearCart();
         router.push("/orders");
-      } else {
-        toast.error(data.error || "Submission failed");
       }
-    } catch (err) {
-      toast.error("Network error.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    } catch (e) { toast.error("System error"); }
+    finally { setIsSubmitting(false); }
   };
 
-  // While mounting, show a simple loading state to prevent "Hydration Mismatch"
   if (!isMounted) return null;
 
   return (
-    <div className="bg-[#FAFAFA] min-h-screen pt-24 md:pt-32 pb-24 px-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-light uppercase tracking-tighter mb-12">Your Bag</h1>
+    <div className="bg-[#FDFDFD] min-h-screen pt-24 pb-20 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Header: Fixed Font Scaling for Mobile */}
+        <header className="mb-12 md:mb-20">
+          <motion.div 
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-baseline gap-3"
+          >
+            <h1 className="text-5xl md:text-7xl font-light tracking-tighter uppercase italic">Bag</h1>
+            <span className="text-[10px] md:text-sm font-mono text-zinc-400">({cartItems.length} Units)</span>
+          </motion.div>
+        </header>
 
         {cartItems.length === 0 ? (
-          <div className="text-center py-20 border-t border-zinc-200">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 mb-8">Bag is currently empty</p>
-            <Link href="/explore" className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-black pb-1">
+          <div className="h-[50vh] flex flex-col justify-center items-center border-t border-zinc-100">
+            <p className="text-[10px] uppercase tracking-[0.5em] text-zinc-400 mb-8">Selection Empty</p>
+            <Link href="/explore" className="px-8 py-4 bg-black text-white text-[10px] uppercase tracking-widest">
               Browse Collection
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-            {/* Left Column: Items */}
-            <div className="lg:col-span-2 space-y-8">
-              {cartItems.map((item) => (
-                <div key={item._id} className="flex gap-6 pb-8 border-b border-zinc-100 items-center">
-                  <div className="relative w-24 h-32 bg-zinc-100 overflow-hidden">
-                    <Image src={item.imageSrc} alt={item.name} fill className="object-cover" />
-                  </div>
-                  <div className="flex-1 space-y-1">
-                    <h3 className="text-[12px] font-bold uppercase tracking-widest">{item.name}</h3>
-                    <p className="text-[10px] text-zinc-500 uppercase">Qty: {item.quantity}</p>
-                    <p className="text-sm font-medium">₹{item.price}</p>
-                    <button 
-                      onClick={() => removeFromCart(item._id)}
-                      className="text-[9px] uppercase tracking-widest text-red-500 pt-2"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            {/* LEFT: ITEM LIST */}
+            <div className="lg:col-span-7 space-y-12 md:space-y-20">
+              <AnimatePresence mode="popLayout">
+                {cartItems.map((item) => (
+                  <motion.div
+                    key={`${item._id}-${item.size}`}
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    layout
+                    className="flex flex-col sm:flex-row gap-6 items-start border-b border-zinc-100 pb-12 sm:border-none"
+                  >
+                    {/* Responsive Image Container */}
+                    <div className="relative w-full sm:w-48 h-64 md:h-72 bg-[#F5F5F5] overflow-hidden group">
+                      <Image
+                        src={item.imageSrc}
+                        alt={item.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                      />
+                    </div>
+
+                    <div className="flex-1 w-full space-y-4 md:space-y-6">
+                      <div className="flex justify-between items-start">
+                        <div className="max-w-[70%]">
+                          <h3 className="text-lg md:text-xl font-medium tracking-tight uppercase text-zinc-900 leading-tight">{item.name}</h3>
+                          <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mt-1">Ref. {item._id.slice(-6)}</p>
+                        </div>
+                        <p className="text-md md:text-lg font-light">₹{item.price}</p>
+                      </div>
+
+                      <div className="flex gap-10 border-y border-zinc-50 py-3">
+                        <div>
+                          <p className="text-[8px] uppercase text-zinc-400 tracking-widest mb-1">Size</p>
+                          <p className="text-xs font-bold uppercase">{item.size}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] uppercase text-zinc-400 tracking-widest mb-1">Qty</p>
+                          <p className="text-xs font-bold">{item.quantity}</p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => removeFromCart(item._id, item.size)}
+                        className="text-[10px] uppercase tracking-[0.3em] text-red-500 flex items-center gap-2 group/btn"
+                      >
+                        <span className="w-4 h-[1px] bg-red-500/30 group-hover/btn:w-8 transition-all" />
+                        Remove Item
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
 
-            {/* Right Column: Checkout */}
-            <div className="space-y-10">
-              <div className="bg-white p-8 border border-zinc-200 shadow-sm space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Shipping Destination</label>
-                  <textarea 
+            {/* RIGHT: SHIPPING (Sticky only on Desktop) */}
+            <div className="lg:col-span-5 relative">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="lg:sticky lg:top-32 bg-white md:bg-zinc-50 border border-zinc-100 md:p-12 p-6 shadow-sm md:shadow-2xl"
+              >
+                <div className="mb-10">
+                  <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-900 mb-6 italic underline underline-offset-8">Shipping address</h2>
+                  <textarea
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Enter full address..."
-                    className="w-full border-b border-zinc-200 py-2 text-sm outline-none focus:border-black min-h-[100px] resize-none"
+                    placeholder="Street, City, Zip, Country"
+                    className="w-full bg-transparent border-b border-zinc-200 py-4 text-sm focus:border-black outline-none transition-all resize-none h-24 placeholder:text-zinc-500"
                   />
                 </div>
 
-                <div className="pt-4 border-t border-zinc-100">
-                  <div className="flex justify-between items-center mb-6">
-                    <span className="text-[10px] uppercase font-bold tracking-widest">Total</span>
-                    <span className="text-2xl font-light tracking-tighter">₹{totalPrice}</span>
+                <div className="space-y-4 mb-10 text-[10px] uppercase tracking-widest">
+                  <div className="flex justify-between pt-4 border-t border-zinc-100 text-lg font-light lowercase">
+                    <span className="italic">Subtotal</span>
+                    <span className="font-medium text-2xl tracking-tighter">₹{totalPrice}</span>
                   </div>
-                  <button 
-                    onClick={handleCheckout}
-                    disabled={isSubmitting}
-                    className="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 disabled:bg-zinc-200 transition-all"
-                  >
-                    {isSubmitting ? "Finalizing Order..." : "Confirm Checkout"}
-                  </button>
                 </div>
-              </div>
+
+                <button
+                  onClick={handleCheckout}
+                  disabled={isSubmitting}
+                  className="w-full bg-black text-white py-6 text-[10px] font-bold uppercase tracking-[0.4em] active:scale-[0.98] transition-all relative overflow-hidden"
+                >
+                  <span className={isSubmitting ? "opacity-0" : "opacity-100"}>Confirm Order</span>
+                  {isSubmitting && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    </div>
+                  )}
+                </button>
+              </motion.div>
             </div>
           </div>
         )}
@@ -624,3 +962,14 @@ export default function CartPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
