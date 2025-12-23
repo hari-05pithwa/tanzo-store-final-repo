@@ -886,6 +886,203 @@
 
 
 
+// "use client";
+// import { SignedOut, SignedIn, UserButton, useUser } from "@clerk/nextjs";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { useState, useEffect } from "react";
+// import { usePathname } from "next/navigation"; 
+// import { useCart } from "@/context/CartContext";
+
+// export default function Navbar() {
+//   const { cartItems } = useCart();
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+//   const { user } = useUser();
+//   const pathname = usePathname();
+
+//   const isAdmin = user?.primaryEmailAddress?.emailAddress === "haripithwa2005@gmail.com";
+
+//   useEffect(() => {
+//     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
+//   }, [isMobileMenuOpen]);
+
+//   const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+//   const isActive = (path) => pathname === path;
+
+//   const NavLinks = ({ mobile = false }) => {
+//     const links = [
+//       { name: "Explore", href: "/explore" },
+//       { name: "Men", href: "/men" },
+//       { name: "Women", href: "/women" },
+//     ];
+
+//     // Combine standard links with Orders for the mobile mapping
+//     const mobileLinks = [...links];
+//     if (user) mobileLinks.push({ name: "Orders", href: "/orders" });
+
+//     return (
+//       <div className={`flex ${mobile ? "flex-col w-full items-start" : "flex-row gap-8 lg:gap-10 items-center"}`}>
+//         {mobileLinks.map((link, index) => (
+//           <Link
+//             key={link.name}
+//             href={link.href}
+//             onClick={() => setIsMobileMenuOpen(false)}
+//             style={{ 
+//               transitionDelay: mobile ? `${index * 50 + 150}ms` : "0ms" 
+//             }}
+//             className={`${
+//               mobile
+//                 ? `text-4xl py-6 border-b border-white/20 w-full text-left font-light tracking-widest text-white transition-all duration-500 ease-out ${
+//                     isMobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0"
+//                   }`
+//                 : `text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 relative group ${
+//                     isActive(link.href) ? "text-black" : "text-zinc-400 hover:text-black"
+//                   }`
+//             }`}
+//           >
+//             {link.name}
+//             {!mobile && (
+//               <span className={`absolute -bottom-1 left-0 h-[1px] bg-black transition-all duration-300 ${isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"}`} />
+//             )}
+//           </Link>
+//         ))}
+
+//         <SignedIn>
+//           {isAdmin && (
+//             <Link
+//               href="/admin"
+//               onClick={() => setIsMobileMenuOpen(false)}
+//               style={{ 
+//                 transitionDelay: mobile ? `${mobileLinks.length * 50 + 150}ms` : "0ms" 
+//               }}
+//               className={`${
+//                 mobile
+//                   ? `text-4xl py-6 border-b border-white/20 w-full text-left font-light tracking-widest text-yellow-200 transition-all duration-500 ease-out ${
+//                       isMobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0"
+//                     }`
+//                   : `text-[10px] lg:text-[11px] uppercase tracking-[0.3em] font-bold px-4 py-1.5 rounded-sm transition-all ${
+//                       isActive("/admin") 
+//                         ? "bg-indigo-600 text-white" 
+//                         : "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
+//                     }`
+//               }`}
+//             >
+//               Admin
+//             </Link>
+//           )}
+//         </SignedIn>
+//       </div>
+//     );
+//   };
+
+//   return (
+//     <>
+//       {/* MOBILE DRAWER */}
+//       <div
+//         className={`fixed inset-0 w-full h-screen bg-[#080808] z-[999] flex flex-col transition-all duration-700 ease-in-out md:hidden ${
+//           isMobileMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+//         }`}
+//       >
+//         <div className="flex items-center justify-between px-6 py-8">
+//           <span className="text-[10px] text-white/40 uppercase tracking-[0.8em] font-medium">Navigation</span>
+//           <button onClick={() => setIsMobileMenuOpen(false)} className="text-white p-2">
+//             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+//               <path d="M6 18L18 6M6 6l12 12" />
+//             </svg>
+//           </button>
+//         </div>
+//         <div className="flex-1 flex flex-col justify-center px-10">
+//           <NavLinks mobile={true} />
+//           <SignedOut>
+//              <Link
+//               href="/auth/sign-in"
+//               onClick={() => setIsMobileMenuOpen(false)}
+//               className="text-xl mt-16 py-4 border border-white/20 text-white text-center uppercase tracking-[0.4em] font-light"
+//             >
+//               Sign In
+//             </Link>
+//           </SignedOut>
+//         </div>
+//       </div>
+
+//       {/* MAIN NAVBAR */}
+//       <header className="w-full border-b border-zinc-100 bg-white/80 backdrop-blur-md sticky top-0 left-0 z-[100]">
+//         <nav className="max-w-[1440px] mx-auto flex items-center px-6 md:px-12 py-4 md:py-6">
+//           <div className="flex-1 flex items-center">
+//             <button
+//               className="md:hidden flex flex-col gap-2 p-2 -ml-2"
+//               onClick={() => setIsMobileMenuOpen(true)}
+//             >
+//               <div className="w-6 h-[1px] bg-black"></div>
+//               <div className="w-4 h-[1px] bg-black"></div>
+//             </button>
+//             <div className="hidden md:block">
+//               <NavLinks />
+//             </div>
+//           </div>
+
+//           <Link href="/" className="flex-shrink-0">
+//             <Image
+//               src="/TanzoStoreLogo.svg"
+//               className="h-[14px] md:h-[18px] lg:h-[20px] w-auto"
+//               height={30}
+//               width={100}
+//               alt="Tanzo"
+//               priority
+//             />
+//           </Link>
+
+//           <div className="flex-1 flex items-center justify-end gap-3 md:gap-6">
+//             <SignedIn>
+//               <Link href="/cart" className="relative p-2">
+//                 <svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 -960 960 960" width="22" className="fill-black">
+//                   <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h440q17 0 28.5 11.5T760-320q0 17-11.5 28.5T720-280H280q-45 0-68-39.5t-2-78.5l54-98-144-304H80q-17 0-28.5-11.5T40-840q0-17 11.5-28.5T80-880h65q11 0 21 6t15 17l27 57Zm134 280h280-280Z" />
+//                 </svg>
+//                 {totalQuantity > 0 && (
+//                   <span className="absolute top-0 right-0 bg-black text-white text-[8px] font-medium h-4 w-4 flex items-center justify-center rounded-full">
+//                     {totalQuantity}
+//                   </span>
+//                 )}
+//               </Link>
+//               <div className="pl-4 border-l border-zinc-100 ml-2">
+//                 <UserButton
+//                   appearance={{
+//                     elements: { userButtonAvatarBox: "h-8 w-8" },
+//                   }}
+//                 />
+//               </div>
+//             </SignedIn>
+            
+//             <SignedOut>
+//               <div className="flex items-center gap-6">
+//                 <Link
+//                   href="/auth/sign-in"
+//                   className="text-[11px] uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-black transition-colors"
+//                 >
+//                   Sign In
+//                 </Link>
+//                 <Link
+//                   href="/auth/sign-up"
+//                   className="hidden md:block px-8 py-2.5 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-bold rounded-sm hover:bg-zinc-800 transition-all"
+//                 >
+//                   Join
+//                 </Link>
+//               </div>
+//             </SignedOut>
+//           </div>
+//         </nav>
+//       </header>
+//     </>
+//   );
+// }
+
+
+
+
+
+
+
+
 "use client";
 import { SignedOut, SignedIn, UserButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
@@ -916,7 +1113,6 @@ export default function Navbar() {
       { name: "Women", href: "/women" },
     ];
 
-    // Combine standard links with Orders for the mobile mapping
     const mobileLinks = [...links];
     if (user) mobileLinks.push({ name: "Orders", href: "/orders" });
 
@@ -962,8 +1158,8 @@ export default function Navbar() {
                     }`
                   : `text-[10px] lg:text-[11px] uppercase tracking-[0.3em] font-bold px-4 py-1.5 rounded-sm transition-all ${
                       isActive("/admin") 
-                        ? "bg-indigo-600 text-white" 
-                        : "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
+                        ? "bg-black text-white" 
+                        : "text-zinc-900 border border-zinc-200 hover:bg-zinc-50"
                     }`
               }`}
             >
@@ -997,9 +1193,12 @@ export default function Navbar() {
              <Link
               href="/auth/sign-in"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-xl mt-16 py-4 border border-white/20 text-white text-center uppercase tracking-[0.4em] font-light"
+              className="group flex items-center justify-between text-xl mt-16 py-6 border border-white/20 px-4 text-white uppercase tracking-[0.4em] font-light hover:bg-white hover:text-black transition-all duration-300"
             >
-              Sign In
+              <span>Sign In</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:translate-x-2 transition-transform">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </Link>
           </SignedOut>
         </div>
@@ -1054,20 +1253,24 @@ export default function Navbar() {
             </SignedIn>
             
             <SignedOut>
-              <div className="flex items-center gap-6">
-                <Link
-                  href="/auth/sign-in"
-                  className="text-[11px] uppercase tracking-[0.2em] font-medium text-zinc-400 hover:text-black transition-colors"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/auth/sign-up"
-                  className="hidden md:block px-8 py-2.5 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-bold rounded-sm hover:bg-zinc-800 transition-all"
-                >
-                  Join
-                </Link>
-              </div>
+              {/* DESKTOP VERSION */}
+              <Link
+                href="/auth/sign-in"
+                className="hidden md:group md:flex items-center gap-2.5 px-5 py-2 border border-zinc-200 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-900 hover:bg-black hover:text-white hover:border-black transition-all duration-300"
+              >
+                <span>Sign In</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:translate-x-0.5 transition-transform">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+
+              {/* MOBILE VERSION (Condensed) */}
+              <Link
+                href="/auth/sign-in"
+                className="flex md:hidden items-center justify-center border border-zinc-200 rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.1em] font-bold text-zinc-900"
+              >
+                Sign In
+              </Link>
             </SignedOut>
           </div>
         </nav>
