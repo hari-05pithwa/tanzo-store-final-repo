@@ -561,7 +561,7 @@ export default function ProductClient({ product }) {
               </div>
               
               <div className="grid grid-cols-4 gap-2">
-                {product.sizes.map((size) => (
+                {product.sizes?.map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
