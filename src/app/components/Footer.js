@@ -94,9 +94,16 @@ export default function Footer() {
           
           {/* Brand Identity */}
           <div className="flex flex-col items-center md:items-start space-y-6">
-            <h3 className="text-3xl font-black tracking-[0.1em] text-gray-900 uppercase">
-              TANZO
-            </h3>
+            <Link href="/" className="flex-shrink-0">
+            <Image
+              src="/TanzoStoreLogo.svg"
+              className="h-[14px] md:h-[18px] lg:h-[20px] w-auto"
+              height={30}
+              width={100}
+              alt="Tanzo"
+              priority
+            />
+          </Link>
             <p className="text-gray-400 text-xs font-light leading-relaxed max-w-xs uppercase tracking-widest">
               Redefining the daily essential with premium fabrics and modern silhouettes.
             </p>
