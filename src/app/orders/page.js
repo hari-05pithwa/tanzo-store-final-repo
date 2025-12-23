@@ -63,7 +63,7 @@
 //     <div className="bg-[#FAFAFA] text-gray-900">
 //       {/* Removed min-h and flex-col to prevent the bottom gap */}
 //       <main className="max-w-5xl mx-auto px-6 pt-10 pb-16 lg:py-16">
-        
+
 //         {/* Header Section */}
 //         <div className="mb-8 md:mb-12 border-b border-gray-200 pb-8 flex justify-between items-end">
 //           <div>
@@ -102,8 +102,8 @@
 //           {orders.length === 0 ? (
 //             <div className="text-center py-20 md:py-32 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm px-6">
 //               <h2 className="text-lg font-light mb-8 text-gray-400 italic">No order history found.</h2>
-//               <Link 
-//                 href="/" 
+//               <Link
+//                 href="/"
 //                 className="inline-block px-12 py-4 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] rounded-full shadow-xl hover:bg-gray-800 transition-all"
 //               >
 //                 Start Shopping
@@ -161,7 +161,7 @@
 //                     </div>
 
 //                     {order.status === "Pending" && (
-//                       <button 
+//                       <button
 //                         onClick={() => confirmCancel(order._id)}
 //                         className="text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-red-600 transition-colors flex items-center gap-2"
 //                       >
@@ -283,8 +283,8 @@
 //         {orders.length === 0 ? (
 //           <div className="text-center py-40">
 //             <h2 className="text-xl font-light mb-10 text-gray-300 italic tracking-tight">No active entries in your archive.</h2>
-//             <Link 
-//               href="/explore" 
+//             <Link
+//               href="/explore"
 //               className="inline-block px-12 py-5 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-blue-600 transition-all"
 //             >
 //               Browse Collection
@@ -347,7 +347,7 @@
 //                   </div>
 
 //                   {order.status === "Pending" && (
-//                     <button 
+//                     <button
 //                       onClick={() => confirmCancel(order._id)}
 //                       className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-300 hover:text-red-600 border-b border-transparent hover:border-red-600 transition-all pb-1"
 //                     >
@@ -537,7 +537,7 @@
 //                   </div>
 
 //                   {order.status === "Processing" && (
-//                     <button 
+//                     <button
 //                       onClick={() => confirmCancel(order._id)}
 //                       className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-300 hover:text-red-600 border-b border-transparent hover:border-red-600 transition-all pb-1"
 //                     >
@@ -557,10 +557,6 @@
 //     </div>
 //   );
 // }
-
-
-
-
 
 // //og
 // "use client";
@@ -728,7 +724,7 @@
 //                   </div>
 
 //                   {order.status === "Pending" && (
-//                     <button 
+//                     <button
 //                       onClick={() => confirmCancel(order._id)}
 //                       className="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-300 hover:text-red-600 border-b border-transparent hover:border-red-600 transition-all pb-1"
 //                     >
@@ -748,18 +744,6 @@
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-
-
-
 
 // og code
 // "use client";
@@ -868,14 +852,7 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
+// imp
 // "use client";
 // import { useEffect, useState } from "react";
 // import Image from "next/image";
@@ -979,7 +956,7 @@
 //                         <span className="text-[11px] uppercase tracking-widest text-gray-700 font-medium">{new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
 //                     </div>
 //                   </div>
-                  
+
 //                   <div className="lg:text-right w-full lg:w-auto pt-6 lg:pt-0 border-t lg:border-t-0 border-gray-100">
 //                     <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Archive Total</span>
 //                     <p className="text-3xl font-light tracking-tighter text-gray-900">₹{order.totalAmount}</p>
@@ -992,11 +969,11 @@
 //                     {order.items.map((item, idx) => (
 //                       <div key={idx} className="flex gap-6 items-center bg-white p-4 border border-gray-50 rounded-sm hover:border-gray-200 transition-all duration-300">
 //                         <div className="relative w-24 h-32 bg-gray-100 rounded-sm overflow-hidden flex-shrink-0 shadow-sm">
-//                           <Image 
-//                             src={item.image} 
-//                             alt={item.name} 
-//                             fill 
-//                             className="object-cover transition-transform duration-700 group-hover:scale-105" 
+//                           <Image
+//                             src={item.image}
+//                             alt={item.name}
+//                             fill
+//                             className="object-cover transition-transform duration-700 group-hover:scale-105"
 //                           />
 //                         </div>
 //                         <div className="space-y-2 min-w-0">
@@ -1009,12 +986,12 @@
 //                       </div>
 //                     ))}
 //                   </div>
-                  
+
 //                   {/* Action Footer: High Visibility Button */}
 //                   <div className="mt-10 pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
 //                      <p className="text-[9px] text-gray-400 uppercase tracking-[0.2em]">Full global tracking available upon dispatch.</p>
-//                      <button 
-//                         onClick={() => {setOrderToCancel(order._id); setShowModal(true)}} 
+//                      <button
+//                         onClick={() => {setOrderToCancel(order._id); setShowModal(true)}}
 //                         className="w-full sm:w-auto px-8 py-3 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-3 active:scale-95"
 //                       >
 //                         <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
@@ -1030,15 +1007,6 @@
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-
 
 "use client";
 import { useEffect, useState } from "react";
@@ -1171,14 +1139,17 @@ export default function OrdersPage() {
                       </span>
                     </div>
                     <div className="h-10 w-[1px] bg-gray-200 hidden lg:block" />
+                    {/* Updated Status Section inside the Map */}
                     <div>
                       <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block mb-2">
                         Status
                       </span>
                       <div
-                        className={`text-[9px] font-bold uppercase tracking-[0.2em] py-1.5 px-4 rounded-full border shadow-sm ${
+                        className={`text-[9px] font-bold uppercase tracking-[0.2em] py-1.5 px-4 rounded-full border shadow-sm transition-colors duration-500 ${
                           order.status === "Pending"
-                            ? "border-amber-300 bg-amber-50 text-amber-700"
+                            ? "border-amber-200 bg-amber-50 text-amber-700"
+                            : order.status === "Delivered"
+                            ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                             : "border-black bg-black text-white"
                         }`}
                       >
@@ -1258,7 +1229,8 @@ export default function OrdersPage() {
                       Shipping Address
                     </span>
                     <p className="text-[11px] text-gray-600 uppercase tracking-widest leading-relaxed max-w-2xl">
-                      {order.shippingAddress?.fullAddress || "Address details unavailable"}
+                      {order.shippingAddress?.fullAddress ||
+                        "Address details unavailable"}
                     </p>
                   </div>
 

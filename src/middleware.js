@@ -83,30 +83,75 @@
 
 
 
-// middleware.js
-// middleware.js
+// middleware.js - imp
+// import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+
+// const isPublicRoute = createRouteMatcher([
+//   '/', 
+//   '/sign-in(.*)', 
+//   '/sign-up(.*)', 
+//   '/explore(.*)', 
+//   '/men(.*)',      
+//   '/women(.*)',
+//   '/product(.*)',
+//   '/api(.*)' 
+// ]);
+
+// export default clerkMiddleware(async (auth, request) => {
+//   if (!isPublicRoute(request)) {
+//     await auth.protect(); // Use 'await' if you are on Next.js 15
+//   }
+// });
+
+// export const config = {
+//   matcher: [
+//     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+//     '/(api|trpc)(.*)',
+//   ],
+// };
 
 
 
 
 
 
+
+
+
+
+// admin- middlware
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
   '/', 
   '/sign-in(.*)', 
   '/sign-up(.*)', 
   '/explore(.*)', 
-  '/men(.*)',      
-  '/women(.*)',
+  '/men(.*)', 
+  '/women(.*)', 
   '/product(.*)',
   '/api(.*)' 
 ]);
 
+const isAdminRoute = createRouteMatcher(['/admin(.*)']);
+
 export default clerkMiddleware(async (auth, request) => {
+  const { userId, sessionClaims } = await auth();
+  
+  // 1. If it's a private route and user isn't logged in, protect it
   if (!isPublicRoute(request)) {
-    await auth.protect(); // Use 'await' if you are on Next.js 15
+    await auth.protect();
+  }
+
+  // 2. Security: If they try to access /admin, check if they are YOU
+  if (isAdminRoute(request)) {
+    const userEmail = sessionClaims?.email; // Note: Ensure Clerk is configured to provide email in claims
+    const adminEmail = "haripithwa2005@gmail.com";
+    
+    if (userEmail !== adminEmail) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 });
 

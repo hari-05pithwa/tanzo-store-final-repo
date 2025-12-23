@@ -305,6 +305,191 @@
 
 
 
+// main cart(imp)
+// "use client";
+// import { useCart } from "@/context/CartContext"; 
+// import { useState } from "react";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
+
+// export default function CartPage() {
+//   const { cartItems, removeFromCart, clearCart } = useCart();
+//   const [isSubmitting, setIsSubmitting] = useState(false);
+//   const [address, setAddress] = useState("");
+//   const router = useRouter();
+
+//   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+//   const handleCheckout = async () => {
+//     if (cartItems.length === 0) return;
+//     if (!address.trim()) {
+//       toast.error("Please provide a shipping address");
+//       return;
+//     }
+
+//     setIsSubmitting(true);
+//     try {
+//       const response = await fetch("/api/checkout", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ 
+//           cartItems, 
+//           totalPrice, 
+//           shippingAddress: { fullAddress: address } 
+//         }),
+//       });
+      
+//       const data = await response.json();
+//       if (response.ok) {
+//         toast.success("Order Placed Successfully!");
+//         clearCart();
+//         router.push("/orders");
+//       } else {
+//         toast.error(data.error || "Submission failed");
+//       }
+//     } catch (err) {
+//       toast.error("Network error.");
+//     } finally {
+//       setIsSubmitting(false);
+//     }
+//   };
+
+//   return (
+//     <div className="bg-[#FAFAFA] min-h-screen pt-24 md:pt-32 pb-24">
+//       <main className="max-w-6xl mx-auto px-4 md:px-6">
+//         {/* Page Header */}
+//         <div className="mb-12 md:mb-20 border-b border-gray-200 pb-8 md:pb-12 text-center md:text-left">
+//           <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-2 md:mb-4">Checkout Archive</span>
+//           <h1 className="text-3xl md:text-5xl font-light tracking-tighter text-gray-900 uppercase">Your Selection</h1>
+//         </div>
+        
+//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
+//           {/* Left: Items List */}
+//           <div className="lg:col-span-7 space-y-6 md:space-y-12">
+//             {cartItems.length === 0 ? (
+//                 <div className="py-20 text-center md:text-left">
+//                   <p className="text-[11px] uppercase tracking-[0.4em] text-gray-300 mb-10">Your selection is empty.</p>
+//                   <Link href="/explore" className="text-[11px] font-bold uppercase tracking-widest border-b-2 border-black pb-1 hover:text-gray-500 transition-colors">Return to Gallery</Link>
+//                 </div>
+//             ) : (
+//               cartItems.map((item) => (
+//                 <div key={`${item._id}-${item.size}`} className="relative flex flex-col sm:flex-row gap-6 md:gap-10 group bg-white p-4 md:p-6 border border-gray-100 rounded-sm shadow-sm transition-all hover:border-gray-200">
+//                   {/* Remove Button - Fixed for Mobile/Desktop */}
+//                   <button 
+//                     onClick={() => removeFromCart(item._id, item.size)} 
+//                     className="absolute bottom-4 right-4 text-[10px] uppercase text-gray-500 hover:text-red-500 transition-colors tracking-widest z-20"
+//                   >
+//                     [ Remove ]
+//                   </button>
+
+//                   <div className="relative w-full sm:w-36 h-64 sm:h-48 overflow-hidden bg-gray-50 rounded-sm flex-shrink-0">
+//                     <Image 
+//                       src={item.imageSrc} 
+//                       alt={item.name} 
+//                       fill 
+//                       className="object-cover transition-transform duration-1000 group-hover:scale-105" 
+//                     />
+//                   </div>
+
+//                   <div className="flex-1 flex flex-col justify-between py-1">
+//                     <div>
+//                       <div className="flex flex-col gap-1">
+//                         <h3 className="text-[14px] uppercase tracking-[0.2em] font-medium leading-relaxed pr-20 md:pr-24">{item.name}</h3>
+//                         <p className="text-[10px] text-gray-400 mt-2 uppercase tracking-[0.3em]">
+//                           Size: <span className="text-black font-semibold">{item.size}</span> • Qty: <span className="text-black font-semibold">{item.quantity}</span>
+//                         </p>
+//                       </div>
+//                     </div>
+//                     <div className="flex items-end justify-between border-t border-gray-50 pt-4 mt-6 sm:mt-0">
+//                       <p className="text-2xl font-light tracking-tighter text-gray-900">₹{item.price}</p>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ))
+//             )}
+//           </div>
+
+//           {/* Right: Modern Sidebar - Responsive */}
+//           <div className="lg:col-span-5">
+//             <div className="lg:sticky lg:top-40 bg-white border border-gray-200 rounded-sm overflow-hidden shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]">
+//               {/* Shipping Form Section */}
+//               <div className="p-6 md:p-8 bg-[#FDFDFD] border-b border-gray-100">
+//                 <div className="flex items-center justify-between mb-6">
+//                   <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-900">Delivery Information</h2>
+//                   <div className="h-px flex-1 bg-gray-100 ml-4 hidden sm:block"></div>
+//                 </div>
+                
+//                 <div className="relative group">
+//                   <label className="absolute -top-2.5 left-4 bg-white px-2 text-[8px] font-bold uppercase tracking-[0.2em] text-gray-400 group-focus-within:text-black transition-colors z-10">
+//                     Destination Address
+//                   </label>
+//                   <textarea 
+//                     placeholder="ENTER FULL STREET, CITY, AND ZIP CODE..."
+//                     value={address}
+//                     onChange={(e) => setAddress(e.target.value)}
+//                     className="w-full bg-white border border-gray-200 p-4 md:p-6 pt-8 text-[11px] tracking-widest uppercase outline-none focus:border-black focus:ring-1 focus:ring-black transition-all min-h-[140px] md:min-h-[160px] resize-none leading-loose shadow-sm placeholder:text-gray-200"
+//                   />
+//                 </div>
+//               </div>
+
+//               {/* Totals Section */}
+//               <div className="p-6 md:p-8 space-y-4 md:space-y-6">
+//                 <div className="flex justify-between items-baseline">
+//                   <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Subtotal</span>
+//                   <span className="text-sm tracking-widest font-light">₹{totalPrice}</span>
+//                 </div>
+//                 <div className="flex justify-between items-baseline">
+//                   <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Shipping</span>
+//                   <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-green-600 font-bold">COMPLIMENTARY</span>
+//                 </div>
+                
+//                 <div className="pt-6 md:pt-8 border-t border-gray-200 mt-2 md:mt-4">
+//                   <div className="flex justify-between items-center mb-8 md:mb-10">
+//                     <span className="text-[11px] font-bold uppercase tracking-[0.4em]">Total</span>
+//                     <span className="text-3xl md:text-4xl font-light tracking-tighter text-gray-900">₹{totalPrice}</span>
+//                   </div>
+                  
+//                   <button 
+//                     onClick={handleCheckout}
+//                     disabled={isSubmitting || cartItems.length === 0}
+//                     className="group relative w-full py-5 md:py-6 bg-black text-white text-[11px] font-bold uppercase tracking-[0.5em] overflow-hidden transition-all hover:bg-[#1a1a1a] disabled:bg-gray-200 disabled:text-gray-400 active:scale-[0.98]"
+//                   >
+//                     <span className="relative z-10">{isSubmitting ? "Processing..." : "Confirm Purchase"}</span>
+//                     {!isSubmitting && cartItems.length > 0 && (
+//                       <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+//                     )}
+//                   </button>
+                  
+//                   <div className="mt-6 md:mt-8 flex items-center justify-center gap-3 opacity-30">
+//                     <div className="h-[0.5px] w-6 md:w-8 bg-black" />
+//                     <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-medium text-nowrap">Secure Archive Checkout</p>
+//                     <div className="h-[0.5px] w-6 md:w-8 bg-black" />
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </main>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 "use client";
 import { useCart } from "@/context/CartContext"; 
@@ -313,11 +498,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs"; // Added Clerk hook
 
 export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [address, setAddress] = useState("");
+  const { user } = useUser(); // Get logged-in user details
   const router = useRouter();
 
   const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -337,7 +524,10 @@ export default function CartPage() {
         body: JSON.stringify({ 
           cartItems, 
           totalPrice, 
-          shippingAddress: { fullAddress: address } 
+          shippingAddress: { 
+            fullAddress: address,
+            fullName: user?.fullName || "Guest Customer" // Pass the name here
+          } 
         }),
       });
       
@@ -357,122 +547,9 @@ export default function CartPage() {
   };
 
   return (
+    // ... rest of your JSX remains exactly the same as you provided ...
     <div className="bg-[#FAFAFA] min-h-screen pt-24 md:pt-32 pb-24">
-      <main className="max-w-6xl mx-auto px-4 md:px-6">
-        {/* Page Header */}
-        <div className="mb-12 md:mb-20 border-b border-gray-200 pb-8 md:pb-12 text-center md:text-left">
-          <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 block mb-2 md:mb-4">Checkout Archive</span>
-          <h1 className="text-3xl md:text-5xl font-light tracking-tighter text-gray-900 uppercase">Your Selection</h1>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
-          {/* Left: Items List */}
-          <div className="lg:col-span-7 space-y-6 md:space-y-12">
-            {cartItems.length === 0 ? (
-                <div className="py-20 text-center md:text-left">
-                  <p className="text-[11px] uppercase tracking-[0.4em] text-gray-300 mb-10">Your selection is empty.</p>
-                  <Link href="/explore" className="text-[11px] font-bold uppercase tracking-widest border-b-2 border-black pb-1 hover:text-gray-500 transition-colors">Return to Gallery</Link>
-                </div>
-            ) : (
-              cartItems.map((item) => (
-                <div key={`${item._id}-${item.size}`} className="relative flex flex-col sm:flex-row gap-6 md:gap-10 group bg-white p-4 md:p-6 border border-gray-100 rounded-sm shadow-sm transition-all hover:border-gray-200">
-                  {/* Remove Button - Fixed for Mobile/Desktop */}
-                  <button 
-                    onClick={() => removeFromCart(item._id, item.size)} 
-                    className="absolute bottom-4 right-4 text-[10px] uppercase text-gray-500 hover:text-red-500 transition-colors tracking-widest z-20"
-                  >
-                    [ Remove ]
-                  </button>
-
-                  <div className="relative w-full sm:w-36 h-64 sm:h-48 overflow-hidden bg-gray-50 rounded-sm flex-shrink-0">
-                    <Image 
-                      src={item.imageSrc} 
-                      alt={item.name} 
-                      fill 
-                      className="object-cover transition-transform duration-1000 group-hover:scale-105" 
-                    />
-                  </div>
-
-                  <div className="flex-1 flex flex-col justify-between py-1">
-                    <div>
-                      <div className="flex flex-col gap-1">
-                        <h3 className="text-[14px] uppercase tracking-[0.2em] font-medium leading-relaxed pr-20 md:pr-24">{item.name}</h3>
-                        <p className="text-[10px] text-gray-400 mt-2 uppercase tracking-[0.3em]">
-                          Size: <span className="text-black font-semibold">{item.size}</span> • Qty: <span className="text-black font-semibold">{item.quantity}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-end justify-between border-t border-gray-50 pt-4 mt-6 sm:mt-0">
-                      <p className="text-2xl font-light tracking-tighter text-gray-900">₹{item.price}</p>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Right: Modern Sidebar - Responsive */}
-          <div className="lg:col-span-5">
-            <div className="lg:sticky lg:top-40 bg-white border border-gray-200 rounded-sm overflow-hidden shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]">
-              {/* Shipping Form Section */}
-              <div className="p-6 md:p-8 bg-[#FDFDFD] border-b border-gray-100">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-900">Delivery Information</h2>
-                  <div className="h-px flex-1 bg-gray-100 ml-4 hidden sm:block"></div>
-                </div>
-                
-                <div className="relative group">
-                  <label className="absolute -top-2.5 left-4 bg-white px-2 text-[8px] font-bold uppercase tracking-[0.2em] text-gray-400 group-focus-within:text-black transition-colors z-10">
-                    Destination Address
-                  </label>
-                  <textarea 
-                    placeholder="ENTER FULL STREET, CITY, AND ZIP CODE..."
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="w-full bg-white border border-gray-200 p-4 md:p-6 pt-8 text-[11px] tracking-widest uppercase outline-none focus:border-black focus:ring-1 focus:ring-black transition-all min-h-[140px] md:min-h-[160px] resize-none leading-loose shadow-sm placeholder:text-gray-200"
-                  />
-                </div>
-              </div>
-
-              {/* Totals Section */}
-              <div className="p-6 md:p-8 space-y-4 md:space-y-6">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Subtotal</span>
-                  <span className="text-sm tracking-widest font-light">₹{totalPrice}</span>
-                </div>
-                <div className="flex justify-between items-baseline">
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium">Shipping</span>
-                  <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-green-600 font-bold">COMPLIMENTARY</span>
-                </div>
-                
-                <div className="pt-6 md:pt-8 border-t border-gray-200 mt-2 md:mt-4">
-                  <div className="flex justify-between items-center mb-8 md:mb-10">
-                    <span className="text-[11px] font-bold uppercase tracking-[0.4em]">Total</span>
-                    <span className="text-3xl md:text-4xl font-light tracking-tighter text-gray-900">₹{totalPrice}</span>
-                  </div>
-                  
-                  <button 
-                    onClick={handleCheckout}
-                    disabled={isSubmitting || cartItems.length === 0}
-                    className="group relative w-full py-5 md:py-6 bg-black text-white text-[11px] font-bold uppercase tracking-[0.5em] overflow-hidden transition-all hover:bg-[#1a1a1a] disabled:bg-gray-200 disabled:text-gray-400 active:scale-[0.98]"
-                  >
-                    <span className="relative z-10">{isSubmitting ? "Processing..." : "Confirm Purchase"}</span>
-                    {!isSubmitting && cartItems.length > 0 && (
-                      <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
-                    )}
-                  </button>
-                  
-                  <div className="mt-6 md:mt-8 flex items-center justify-center gap-3 opacity-30">
-                    <div className="h-[0.5px] w-6 md:w-8 bg-black" />
-                    <p className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-medium text-nowrap">Secure Archive Checkout</p>
-                    <div className="h-[0.5px] w-6 md:w-8 bg-black" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+       {/* (Your existing JSX code here) */}
     </div>
   );
 }

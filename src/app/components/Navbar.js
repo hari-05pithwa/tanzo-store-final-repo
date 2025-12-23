@@ -282,6 +282,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user } = useUser();
 
+  // Updated Admin Logic
   const isAdmin = user?.primaryEmailAddress?.emailAddress === "haripithwa2005@gmail.com";
 
   useEffect(() => {
@@ -319,22 +320,23 @@ export default function Navbar() {
         >
           Orders
         </Link>
+        
+        {/* NEW: Admin Link added to Navbar for your specific email */}
+        {isAdmin && (
+          <Link 
+            href="/admin" 
+            onClick={() => setIsMobileMenuOpen(false)} 
+            className={`${
+              mobile 
+                ? "text-4xl py-4 border-b border-white/5 w-full text-left font-light tracking-tighter text-red-500" 
+                : "text-[10px] lg:text-[11px] uppercase tracking-[0.3em] font-bold text-red-600"
+            } hover:opacity-70 transition-all`}
+          >
+            Admin
+          </Link>
+        )}
       </SignedIn>
       
-      {/* {isAdmin && (
-         <Link 
-          href="/admin/products" 
-          onClick={() => setIsMobileMenuOpen(false)} 
-          className={`${
-            mobile 
-              ? "text-4xl py-4 border-b border-white/5 w-full text-left font-light tracking-tighter text-red-500" 
-              : "text-[10px] lg:text-[11px] uppercase tracking-[0.3em] font-bold text-red-600"
-          } hover:opacity-70 transition-all`}
-        >
-          Admin
-        </Link>
-      )} */}
-
       <SignedOut>
         {mobile && (
           <Link 
@@ -370,12 +372,8 @@ export default function Navbar() {
       <header className="w-full border-b border-gray-100 bg-white/90 backdrop-blur-xl sticky top-0 left-0 z-[100]">
         <nav className="max-w-[1440px] mx-auto flex items-center justify-between px-4 md:px-10 py-3.5 md:py-5">
           
-          {/* LEFT: Burger */}
           <div className="flex items-center flex-1">
-            <button 
-              className="md:hidden flex flex-col gap-1.5 p-2 -ml-2 group" 
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
+            <button className="md:hidden flex flex-col gap-1.5 p-2 -ml-2 group" onClick={() => setIsMobileMenuOpen(true)}>
               <div className="w-5 h-[1.2px] bg-black"></div>
               <div className="w-3.5 h-[1.2px] bg-black"></div>
             </button>
@@ -384,19 +382,10 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* CENTER: Logo (Reduced size for better balance) */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-            <Image 
-              src="/TanzoStoreLogo.svg" 
-              className="h-[14px] md:h-[18px] lg:h-[22px] w-auto transition-all" 
-              height={30} 
-              width={100} 
-              alt="Tanzo" 
-              priority 
-            />
+            <Image src="/TanzoStoreLogo.svg" className="h-[14px] md:h-[18px] lg:h-[22px] w-auto" height={30} width={100} alt="Tanzo" priority />
           </Link>
 
-          {/* RIGHT: Actions */}
           <div className="flex-1 flex items-center justify-end gap-1.5 md:gap-5">
             <SignedIn>
               <Link href="/cart" className="relative p-2 hover:opacity-60 transition-opacity">
@@ -409,19 +398,17 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
-              <div className="pl-1 md:pl-2 border-l border-gray-100 flex items-center">
+              <div className="pl-1 md:pl-2 border-l border-gray-100">
                 <UserButton appearance={{ elements: { userButtonAvatarBox: "h-7 w-7 md:h-8 md:w-8" } }} />
               </div>
             </SignedIn>
-            
             <SignedOut>
               <div className="flex items-center gap-1.5 md:gap-4">
-                <Link href="/auth/sign-in" className="text-[9px] md:text-[11px] uppercase tracking-widest font-bold text-gray-500 hover:text-black whitespace-nowrap">Sign In</Link>
-                <Link href="/auth/sign-up" className="px-3.5 md:px-6 py-1.5 md:py-2 bg-black text-white text-[8px] md:text-[11px] uppercase tracking-widest font-bold rounded-full hover:bg-zinc-800 transition-colors whitespace-nowrap">Join</Link>
+                <Link href="/auth/sign-in" className="text-[9px] md:text-[11px] uppercase tracking-widest font-bold text-gray-500 hover:text-black">Sign In</Link>
+                <Link href="/auth/sign-up" className="px-3.5 md:px-6 py-1.5 md:py-2 bg-black text-white text-[8px] md:text-[11px] uppercase tracking-widest font-bold rounded-full">Join</Link>
               </div>
             </SignedOut>
           </div>
-
         </nav>
       </header>
     </>
