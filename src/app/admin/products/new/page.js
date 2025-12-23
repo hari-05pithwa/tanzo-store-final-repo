@@ -625,6 +625,230 @@
 
 
 
+// "use client";
+// import { useState } from "react";
+// import { useRouter } from "next/navigation";
+// import { toast } from "sonner";
+
+// export default function AddProductPage() {
+//   const router = useRouter();
+//   const [loading, setLoading] = useState(false);
+//   const [uploadingImage, setUploadingImage] = useState(false);
+  
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     price: "",
+//     imageSrc: "",
+//     gender: "male",
+//     slug: "",
+//     description: "",
+//     material: "",
+//     color: "",
+//     // Hardcoded sizes so the Product Detail page doesn't crash
+//     sizes: ["S", "M", "L", "XL"], 
+//   });
+
+//   const handleImageUpload = async (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+
+//     setUploadingImage(true);
+//     const data = new FormData();
+//     data.append("file", file);
+//     data.append("upload_preset", "tanzo_preset"); 
+
+//     try {
+//       const res = await fetch(
+//         `https://api.cloudinary.com/v1_1/dfn4nidvg/image/upload`, 
+//         { method: "POST", body: data }
+//       );
+//       const fileData = await res.json();
+      
+//       if (fileData.secure_url) {
+//         setFormData((prev) => ({ ...prev, imageSrc: fileData.secure_url }));
+//         toast.success("Image uploaded successfully");
+//       }
+//     } catch (err) {
+//       toast.error("Image upload failed");
+//     } finally {
+//       setUploadingImage(false);
+//     }
+//   };
+
+//   const handleNameChange = (e) => {
+//     const name = e.target.value;
+//     setFormData((prev) => ({
+//       ...prev,
+//       name: name,
+//       slug: name.toLowerCase().replace(/[^\w ]+/g, "").replace(/ +/g, "-"),
+//     }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!formData.imageSrc) return toast.error("Please upload an image first");
+    
+//     setLoading(true);
+//     try {
+//       const res = await fetch("/api/admin/products", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(formData),
+//       });
+
+//       if (res.ok) {
+//         toast.success("Archive Updated: Piece Added");
+//         router.push("/admin/products");
+//         router.refresh();
+//       }
+//     } catch (err) {
+//       toast.error("Database error");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-2xl mx-auto py-10 px-6">
+//       <div className="mb-12">
+//         <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 block mb-2">Inventory Management</span>
+//         <h1 className="text-4xl font-light tracking-tighter uppercase text-zinc-900">New Archive Entry</h1>
+//       </div>
+
+//       <form onSubmit={handleSubmit} className="space-y-8 bg-white p-10 border border-zinc-200 shadow-sm">
+        
+//         {/* 1. Image Upload Section */}
+//         <div className="space-y-2">
+//           <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Product Visual</label>
+//           <div className="flex items-center gap-4">
+//             {formData.imageSrc && (
+//               <img src={formData.imageSrc} alt="Preview" className="w-16 h-20 object-cover border border-zinc-200 shadow-sm" />
+//             )}
+//             <input 
+//               type="file" 
+//               accept="image/*"
+//               onChange={handleImageUpload}
+//               className="text-[10px] file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:uppercase file:bg-zinc-100 file:text-black hover:file:bg-zinc-200 cursor-pointer"
+//             />
+//           </div>
+//           {uploadingImage && <p className="text-[9px] uppercase animate-pulse pt-2 text-zinc-500">Uploading to Cloudinary...</p>}
+//         </div>
+
+//         {/* 2. Name & Slug */}
+//         <div className="space-y-8">
+//           <div className="space-y-2">
+//             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Designation Name</label>
+//             <input 
+//               required
+//               placeholder="E.G. HARDIK PANDYA GT TSHIRT"
+//               value={formData.name} 
+//               onChange={handleNameChange}
+//               className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all uppercase text-sm" 
+//             />
+//           </div>
+
+//           <div className="space-y-2">
+//             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">URL Identifier (Auto-Generated)</label>
+//             <input 
+//               required
+//               placeholder="hardik-pandya-gt-tshirt"
+//               value={formData.slug} 
+//               onChange={(e) => setFormData({...formData, slug: e.target.value})}
+//               className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all text-zinc-500 text-sm" 
+//             />
+//           </div>
+//         </div>
+
+//         {/* 3. Description Field */}
+//         <div className="space-y-2">
+//           <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Description</label>
+//           <textarea 
+//             required
+//             placeholder="Describe the aesthetic and fit of this piece..."
+//             value={formData.description} 
+//             onChange={(e) => setFormData({...formData, description: e.target.value})}
+//             className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all text-sm min-h-[80px] resize-none" 
+//           />
+//         </div>
+
+//         {/* 4. Color & Material */}
+//         <div className="grid grid-cols-2 gap-10">
+//           <div className="space-y-2">
+//             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Color</label>
+//             <input 
+//               required
+//               placeholder="E.G. NAVY BLUE"
+//               value={formData.color} 
+//               onChange={(e) => setFormData({...formData, color: e.target.value})}
+//               className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black text-sm" 
+//             />
+//           </div>
+
+//           <div className="space-y-2">
+//             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Material</label>
+//             <input 
+//               required
+//               placeholder="E.G. 100% JERSEY COTTON"
+//               value={formData.material} 
+//               onChange={(e) => setFormData({...formData, material: e.target.value})}
+//               className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black text-sm" 
+//             />
+//           </div>
+//         </div>
+
+//         {/* 5. Price & Gender */}
+//         <div className="grid grid-cols-2 gap-10">
+//           <div className="space-y-2">
+//             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Valuation (INR)</label>
+//             <input 
+//               required
+//               type="number"
+//               placeholder="1499"
+//               value={formData.price} 
+//               onChange={(e) => setFormData({...formData, price: e.target.value})}
+//               className="w-full border-b border-zinc-200 py-2 outline-none text-sm" 
+//             />
+//           </div>
+
+//           <div className="space-y-2">
+//             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Gender Category</label>
+//             <select 
+//               value={formData.gender} 
+//               onChange={(e) => setFormData({...formData, gender: e.target.value})}
+//               className="w-full border-b border-zinc-200 py-2 outline-none bg-transparent text-sm"
+//             >
+//               <option value="male">Men</option>
+//               <option value="female">Women</option>
+//             </select>
+//           </div>
+//         </div>
+
+//         {/* Visual Sizes Guide (Non-editable as per your request) */}
+//         <div className="pt-4 border-t border-zinc-50">
+//            <label className="text-[10px] uppercase font-bold text-zinc-300 tracking-widest block mb-3">Enabled Sizes</label>
+//            <div className="flex gap-2">
+//               {formData.sizes.map(s => (
+//                 <span key={s} className="w-8 h-8 flex items-center justify-center border border-zinc-100 text-[10px] text-zinc-400 font-bold uppercase">{s}</span>
+//               ))}
+//            </div>
+//         </div>
+
+//         <button 
+//           disabled={loading || uploadingImage}
+//           className="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 disabled:bg-zinc-200 transition-all shadow-lg"
+//         >
+//           {loading ? "Processing..." : "Commit to Archive"}
+//         </button>
+//       </form>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -644,7 +868,6 @@ export default function AddProductPage() {
     description: "",
     material: "",
     color: "",
-    // Hardcoded sizes so the Product Detail page doesn't crash
     sizes: ["S", "M", "L", "XL"], 
   });
 
@@ -709,33 +932,35 @@ export default function AddProductPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-10 px-6">
-      <div className="mb-12">
+    <div className="max-w-2xl mx-auto py-6 md:py-10 px-4 md:px-6 pb-20">
+      <div className="mb-8 md:mb-12">
         <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-400 block mb-2">Inventory Management</span>
-        <h1 className="text-4xl font-light tracking-tighter uppercase text-zinc-900">New Archive Entry</h1>
+        <h1 className="text-3xl md:text-4xl font-light tracking-tighter uppercase text-zinc-900">New Archive Entry</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8 bg-white p-10 border border-zinc-200 shadow-sm">
+      <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 bg-white p-6 md:p-10 border border-zinc-200 shadow-sm">
         
         {/* 1. Image Upload Section */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Product Visual</label>
-          <div className="flex items-center gap-4">
-            {formData.imageSrc && (
-              <img src={formData.imageSrc} alt="Preview" className="w-16 h-20 object-cover border border-zinc-200 shadow-sm" />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            {formData.imageSrc ? (
+              <img src={formData.imageSrc} alt="Preview" className="w-20 h-28 object-cover border border-zinc-200 shadow-sm" />
+            ) : (
+              <div className="w-20 h-28 bg-zinc-50 border border-dashed border-zinc-200 flex items-center justify-center text-[9px] text-zinc-400 uppercase tracking-tighter text-center px-2">No Image</div>
             )}
             <input 
               type="file" 
               accept="image/*"
               onChange={handleImageUpload}
-              className="text-[10px] file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:uppercase file:bg-zinc-100 file:text-black hover:file:bg-zinc-200 cursor-pointer"
+              className="text-[10px] w-full file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:uppercase file:bg-zinc-100 file:text-black hover:file:bg-zinc-200 cursor-pointer"
             />
           </div>
           {uploadingImage && <p className="text-[9px] uppercase animate-pulse pt-2 text-zinc-500">Uploading to Cloudinary...</p>}
         </div>
 
         {/* 2. Name & Slug */}
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
           <div className="space-y-2">
             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Designation Name</label>
             <input 
@@ -743,7 +968,7 @@ export default function AddProductPage() {
               placeholder="E.G. HARDIK PANDYA GT TSHIRT"
               value={formData.name} 
               onChange={handleNameChange}
-              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all uppercase text-sm" 
+              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all uppercase text-sm rounded-none" 
             />
           </div>
 
@@ -754,7 +979,7 @@ export default function AddProductPage() {
               placeholder="hardik-pandya-gt-tshirt"
               value={formData.slug} 
               onChange={(e) => setFormData({...formData, slug: e.target.value})}
-              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all text-zinc-500 text-sm" 
+              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all text-zinc-500 text-sm rounded-none" 
             />
           </div>
         </div>
@@ -767,12 +992,12 @@ export default function AddProductPage() {
             placeholder="Describe the aesthetic and fit of this piece..."
             value={formData.description} 
             onChange={(e) => setFormData({...formData, description: e.target.value})}
-            className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all text-sm min-h-[80px] resize-none" 
+            className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all text-sm min-h-[80px] resize-none rounded-none" 
           />
         </div>
 
-        {/* 4. Color & Material */}
-        <div className="grid grid-cols-2 gap-10">
+        {/* 4. Color & Material - Stacked on Mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
           <div className="space-y-2">
             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Color</label>
             <input 
@@ -780,7 +1005,7 @@ export default function AddProductPage() {
               placeholder="E.G. NAVY BLUE"
               value={formData.color} 
               onChange={(e) => setFormData({...formData, color: e.target.value})}
-              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black text-sm" 
+              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black text-sm rounded-none" 
             />
           </div>
 
@@ -791,13 +1016,13 @@ export default function AddProductPage() {
               placeholder="E.G. 100% JERSEY COTTON"
               value={formData.material} 
               onChange={(e) => setFormData({...formData, material: e.target.value})}
-              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black text-sm" 
+              className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black text-sm rounded-none" 
             />
           </div>
         </div>
 
-        {/* 5. Price & Gender */}
-        <div className="grid grid-cols-2 gap-10">
+        {/* 5. Price & Gender - Stacked on Mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
           <div className="space-y-2">
             <label className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Valuation (INR)</label>
             <input 
@@ -806,7 +1031,7 @@ export default function AddProductPage() {
               placeholder="1499"
               value={formData.price} 
               onChange={(e) => setFormData({...formData, price: e.target.value})}
-              className="w-full border-b border-zinc-200 py-2 outline-none text-sm" 
+              className="w-full border-b border-zinc-200 py-2 outline-none text-sm rounded-none" 
             />
           </div>
 
@@ -815,7 +1040,7 @@ export default function AddProductPage() {
             <select 
               value={formData.gender} 
               onChange={(e) => setFormData({...formData, gender: e.target.value})}
-              className="w-full border-b border-zinc-200 py-2 outline-none bg-transparent text-sm"
+              className="w-full border-b border-zinc-200 py-2 outline-none bg-transparent text-sm rounded-none appearance-none"
             >
               <option value="male">Men</option>
               <option value="female">Women</option>
@@ -823,10 +1048,10 @@ export default function AddProductPage() {
           </div>
         </div>
 
-        {/* Visual Sizes Guide (Non-editable as per your request) */}
-        <div className="pt-4 border-t border-zinc-50">
+        {/* Enabled Sizes */}
+        <div className="pt-4 border-t border-zinc-50 text-center md:text-left">
            <label className="text-[10px] uppercase font-bold text-zinc-300 tracking-widest block mb-3">Enabled Sizes</label>
-           <div className="flex gap-2">
+           <div className="flex gap-2 justify-center md:justify-start">
               {formData.sizes.map(s => (
                 <span key={s} className="w-8 h-8 flex items-center justify-center border border-zinc-100 text-[10px] text-zinc-400 font-bold uppercase">{s}</span>
               ))}
@@ -835,7 +1060,7 @@ export default function AddProductPage() {
 
         <button 
           disabled={loading || uploadingImage}
-          className="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 disabled:bg-zinc-200 transition-all shadow-lg"
+          className="w-full bg-black text-white py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-zinc-800 disabled:bg-zinc-200 transition-all shadow-lg active:scale-[0.98]"
         >
           {loading ? "Processing..." : "Commit to Archive"}
         </button>

@@ -327,14 +327,6 @@ export default function EditProductPage({ params }) {
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-[10px] uppercase font-bold text-zinc-400">URL Slug (e.g. black-oversized-tee)</label>
-          <input 
-            value={formData.slug} 
-            onChange={(e) => setFormData({...formData, slug: e.target.value})}
-            className="w-full border-b border-zinc-200 py-2 outline-none focus:border-black transition-all" 
-          />
-        </div>
 
         <div className="grid grid-cols-2 gap-10">
           <div className="space-y-2">
