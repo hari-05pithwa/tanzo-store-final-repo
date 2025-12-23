@@ -665,7 +665,7 @@ export default function ProductClient({ product }) {
         description: "Please sign in to add items to your archive selection.",
         action: {
           label: "Login",
-          onClick: () => router.push("/sign-in"), // Use your clerk sign-in path
+          onClick: () => router.push("/auth/sign-in"), // Use your clerk sign-in path
         },
       });
       return;

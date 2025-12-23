@@ -50,9 +50,9 @@ const ProductSchema = new mongoose.Schema(
   },
   { 
     timestamps: true,
-    collection: 'products' // <--- This belongs here, not above
+    collection: 'products' 
   }
 );
 
-// This ensures we don't redefine the model if it already exists
+
 export default mongoose.models.Product || mongoose.model("Product", ProductSchema);
